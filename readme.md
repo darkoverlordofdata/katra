@@ -11,7 +11,6 @@ A basic language interpreter written in coffee-script.
              \\\\-------  --
              '-----------'
 
-               NCC - 1701
 
 Katra has one goal - to run StarTrek.bas games from the golden age of basic programming.
 
@@ -31,16 +30,10 @@ This will create the /usr/bin/katra command
 ```bash
 $ katra
 ```
-Runs the default bnf based version.
-
-```bash
-$ katra bnf
-```
-Runs the peg version (not yet working).
 
 ## Usage
 ```basic
-> GET 'STTR1'
+> GET-STTR1
 > RUN
 ```
 
