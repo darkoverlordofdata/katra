@@ -3,7 +3,7 @@ description: "Beam Me Up"
 
 exclude: ['Cakefile', 'package.json']
 
-destination: ./katra
+destination: ../gh-pages
 
 port: 53610
 url: http://localhost:53610
