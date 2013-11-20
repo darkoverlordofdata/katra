@@ -102,7 +102,7 @@ Well, it was 1975, and this was about as good as it got!
 </div>
 <div class="row-fluid">
 <div class="span4">
-    <h4>Games</h4>
+    <h4>Katra</h4>
 <ul>
     
     <li><a href="/katra//2012/03/13/announcing-katra/">Repl</a></li>
@@ -144,7 +144,7 @@ Well, it was 1975, and this was about as good as it got!
 
         if ($('.console')) {
             katra.setRoot("/katra/");
-            katra.command.gwbasic("eliza", function(){$('#katra-source').text(katra.getText())});
+            katra.command.get("GET-STTR1", function(){$('#katra-source').text(katra.getText())});
 
         }
     })

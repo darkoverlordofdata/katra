@@ -79,7 +79,7 @@
 
             <div class="tab-pane active" id="katra-tab-content">
                 <p>Hunt the Wumpus</p>
-<p>An Atari game, written by Gregory Yob, I found this in the Atari Archives.</p>
+<p>Written by Gregory Yob, I found this in the Atari Archives.</p>
             </div>
 
             <div class="tab-pane" id="katra-tab-code">
@@ -100,7 +100,7 @@
 </div>
 <div class="row-fluid">
 <div class="span4">
-    <h4>Games</h4>
+    <h4>Katra</h4>
 <ul>
     
     <li><a href="/katra//2012/03/13/announcing-katra/">Repl</a></li>
@@ -142,7 +142,7 @@
 
         if ($('.console')) {
             katra.setRoot("/katra/");
-            katra.command.gwbasic("eliza", function(){$('#katra-source').text(katra.getText())});
+            katra.command.atari("WUMPUS", function(){$('#katra-source').text(katra.getText())});
 
         }
     })
