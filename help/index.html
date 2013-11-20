@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Katra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script src="//use.edgefonts.net/arvo.js"></script>
+    <link href="//cdn.darkoverlordofdata.com/css/bootstrap-arvo.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+        pre.katra-source {
+            font-size: 110%;
+            font-weight: bold;
+        }
+    </style>
+    <link href="/katra/css/katra.css" rel="stylesheet">
+    <link href="//cdn.darkoverlordofdata.com/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- Fav and touch icons -->
+    <link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">
+    <link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">
+    <link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">
+    <link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed">
+    <link href="//cdn.darkoverlordofdata.com/ico/favicon.png" rel="shortcut icon" type="image/png">
+    <!-- Google Analytics Code -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', "UA-41153554-1"]);
+        _gaq.push(['_setDomainName', 'darkoverlordofdata.com']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+    <!-- End Google Analytics Code -->
+</head>
+
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/katra">Katra</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active"><a href="http://darkoverlordofdata.com/">Home</a></li>
+                    <li><a href="/katra/about">About</a></li>
+                    <li><a href="/katra/help">Help</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+<div class="row-fluid">
+    <div class="span8">
+        <ul class="nav nav-tabs" id="katra-menu">
+    <li class="active"><a data-target="#katra-tab-general" data-toggle="tab">General</a></li>
+    <li><a data-target="#katra-tab-commands" data-toggle="tab">Commands</a></li>
+    <li><a data-target="#katra-tab-keywords" data-toggle="tab">Keywords</a></li>
+</ul>
+
+<div class="tab-content">
+
+    <div class="tab-pane active" id="katra-tab-general">
+        <p>
+            Katra emulates a subset of HP 2000/Access BASIC.
+        </p>
+
+    </div>
+
+    <div class="tab-pane" id="katra-tab-commands">
+        <dl>
+            <dt>Append-filename</dt>
+            <dd>Merge basic file into workspace.</dd>
+
+            <dt>Atari "filename"</dt>
+            <dd>Loads an atari basic game.</dd>
+
+            <dt>Catalog</dt>
+            <dd>List user programs.</dd>
+
+            <dt>Del [-from] [, to]</dt>
+            <dd>Delete program line number(s).</dd>
+
+            <dt>Execute-filename</dt>
+            <dd>Loads filename and executes.</dd>
+
+            <dt>Get-filename</dt>
+            <dd>Loads a program from storage.</dd>
+
+            <dt>Group</dt>
+            <dd>List group programs.</dd>
+
+            <dt>Gwbasic "filename"</dt>
+            <dd>Loads an gw basic game.</dd>
+
+            <dt>Library</dt>
+            <dd>List system programs.</dd>
+
+            <dt>List [-from] [, to]</dt>
+            <dd>To list the program, from and to line numbers.</dd>
+
+            <dt>Purge-filename</dt>
+            <dd>Delete program file.</dd>
+
+            <dt>Run</dt>
+            <dd>Runs the currently loaded progam.</dd>
+
+            <dt>Save</dt>
+            <dd>Saves current program.</dd>
+
+            <dt>Scratch</dt>
+            <dd>Erase current variables.</dd>
+
+            <dt>Trace &lt;On|Off&gt;</dt>
+            <dd>Turn debug listing on or off.</dd>
+        </dl>
+    </div>
+
+    <div class="tab-pane" id="katra-tab-keywords">
+        <dl>
+            <dt>Base(n)</dt>
+            <dd>Sets the low bound array indice - default 0.</dd>
+
+            <dt>Cls</dt>
+            <dd>Erases the console area.</dd>
+
+            <dt>Data n, 'string', ...</dt>
+            <dd>List data constants.</dd>
+
+            <dt>Def FN&lt;a&gt;(x) = expression</dt>
+            <dd>Define a function.</dd>
+
+            <dt>End</dt>
+            <dd>Ends the program execution.</dd>
+
+            <dt>For &lt;var&gt; = &lt;expression&gt; To &lt;expression&gt; [Step &lt;expression&gt;]</dt>
+            <dd>Head of a For/Next loop.</dd>
+
+            <dt>Goto &lt;line no&gt;</dt>
+            <dd>Jump to the line number.</dd>
+
+            <dt>Gosub &lt;line no&gt;</dt>
+            <dd>Jump to subroutine at line number.</dd>
+
+            <dt>If &lt;condition&gt; Then line no</dt>
+            <dd>If the expression is true, jump to the line number.</dd>
+
+            <dt>Image var [,var...]</dt>
+            <dd>List of variables to print.</dd>
+
+            <dt>Input var [,var...]</dt>
+            <dd>Input a List of variables.</dd>
+
+            <dt>[Let] var = [var = ] expression</dt>
+            <dd>Set variable to expression.</dd>
+
+            <dt>Mat var = &lt;Con|Zer&gt;</dt>
+            <dd>Initialize array values.</dd>
+
+            <dt>Next var</dt>
+            <dd>Footer of for next loop. Increments var by step.</dd>
+
+            <dt>Print expression [; expression ;]</dt>
+            <dd>Print list of expressions.</dd>
+
+            <dt>Purge</dt>
+            <dd>Removes the current program from memory.</dd>
+
+            <dt>Read var [, var ...]</dt>
+            <dd>Read variables from Data.</dd>
+
+            <dt>Restore</dt>
+            <dd>Reset Data to beginning.</dd>
+
+            <dt>Return</dt>
+            <dd>Return from a subroutine.</dd>
+
+            <dt>Rem text...</dt>
+            <dd>Comments.</dd>
+
+            <dt>Stop</dt>
+            <dd>Stops execution.</dd>
+
+        </dl>
+    </div>
+
+</div>
+
+
+    </div>
+    <div class="span4">
+        <p>
+<dl>
+    <p>
+        <dt><strong>katra</strong></dt>
+    <dd><em>Living essence or spirit.</em></dd>
+</p>
+</dl>
+</p>
+<h5>Games</h5>
+<ul>
+    <ul>
+    
+    <li><a href="/katra/2012/03/13/announcing-katra/">Repl</a></li>
+    
+    <li><a href="/katra/2013/11/18/eliza/">Eliza</a></li>
+    
+    <li><a href="/katra/2013/11/18/hunt-the-wumpus/">Hunt the Wumpus</a></li>
+    
+    <li><a href="/katra/2013/11/18/startrek/">StarTrek</a></li>
+    
+</ul>
+
+
+
+    </div>
+</div>
+</div>
+<script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>
+<script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
+<script src='//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'></script>
+<script src='/katra/js/rte.browser.js'></script>
+<script src='/katra/js/katra.js'></script>
+<script src='/katra/js/kc.js'></script>
+<script>
+
+(function() {
+    $(function() {
+
+        if ($('.console')) {
+            katra.setRoot("/katra/");
+            katra.command.("", function(){$('#katra-source').text(katra.getText())});
+
+        }
+    })
+}).call(this);
+</script>
+</body>
+</html>
