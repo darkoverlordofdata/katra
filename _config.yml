@@ -1,0 +1,23 @@
+name: "Katra"
+description: "Beam Me Up"
+
+exclude: ['Cakefile', 'package.json']
+
+destination: ./katra
+
+port: 53610
+url: http://localhost:53610
+baseurl: /katra/
+paginate: 5
+paginate_path: "list/page:num"
+
+markdown: rdiscount
+permalink: pretty
+pygments: true
+
+
+jekyll_sort:
+  - src: posts
+    by: some_date
+    direction: up
+    dest: posts_asc

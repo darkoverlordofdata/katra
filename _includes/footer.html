@@ -1,0 +1,24 @@
+</div>
+<script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>
+<script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
+<script src='//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'></script>
+<script src='/katra/js/rte.browser.js'></script>
+<script src='/katra/js/katra.js'></script>
+<script src='/katra/js/kc.js'></script>
+<script>
+
+(function() {
+    $(function() {
+
+        if ($('.console')) {
+            katra.setRoot("/katra/");
+            katra.command.{{ page.command }}("{{ page.program }}", function(){$('#katra-source').text(katra.getText())});
+
+        }
+    })
+}).call(this);
+</script>
+</body>
+</html>
