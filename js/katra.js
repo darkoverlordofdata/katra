@@ -632,6 +632,9 @@
     getText: function() {
       return _txt;
     },
+    focus: function() {
+      return _con.focus();
+    },
     parse: _parse,
     command: {
       append: function($0) {
@@ -664,7 +667,7 @@
         });
       },
       cls: function() {
-        return _con.clear();
+        return _con.reset();
       },
       del: function($0) {
         var $end, $lineno, $start, _i, _ref1, _results;

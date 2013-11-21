@@ -80,7 +80,7 @@
         
 
         
-        <li><a href="/katra">Home</a></li>
+        <li><a href="/katra/">Home</a></li>
         
 
     </ul>
@@ -116,10 +116,8 @@
             </div>
 
         </div>
-
     </div>
 </div>
-
 <p><a href="/katra">back</a></p>
 
 
@@ -133,6 +131,7 @@
 <script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
+
 <script src='/katra/js/prettify.js'></script>
 <script src='/katra/js/lang-basic.js'></script>
 <script src='/katra/js/rte.browser.js'></script>
@@ -143,14 +142,22 @@
 (function() {
     $(function() {
 
-        if ($('.console')) {
-            katra.setRoot("/katra/");
-            katra.command.atari("WUMPUS", function(){
-                $('#katra-source').text(katra.getText());
-                prettyPrint();
-            });
+        katra.setRoot("/katra/");
 
-        }
+        $('a[data-toggle="tab"]').live('click', function (e) {
+            if (/\#repl$/.test(e.target)) {
+                katra.focus();
+            }
+        });
+
+        
+        katra.command.atari("WUMPUS", function(){
+            $('#katra-source').text(katra.getText());
+            prettyPrint();
+        });
+        
+
+
     })
 }).call(this);
 </script>
