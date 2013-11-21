@@ -19,6 +19,12 @@
             margin: 0 auto;
             max-width: 800px;
         }
+
+        .katra-source {
+            height:400px;
+            overflow:auto;
+        }
+
     </style>
     <link href="/katra/css/katra.css" rel="stylesheet">
     <link href="//cdn.darkoverlordofdata.com/css/bootstrap-responsive.css" rel="stylesheet">
@@ -110,12 +116,11 @@
 <p><a href="/katra">Katra</a> BASIC language interpreter in CoffeeScript</p>
 <p><a href="http://expresso.darkoverlordofdata.com">Exspresso</a> A CoffeeScript MVC Web Framework</p>
 </div>
-
+<script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&amp;skin=desert&amp;lang=basic" defer="defer"></script>
 <script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>
 <script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
-<script src='//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'></script>
 <script src='/katra/js/rte.browser.js'></script>
 <script src='/katra/js/katra.js'></script>
 <script src='/katra/js/kc.js'></script>
@@ -126,7 +131,9 @@
 
         if ($('.console')) {
             katra.setRoot("/katra/");
-            katra.command.atari("WUMPUS", function(){$('#katra-source').text(katra.getText())});
+            katra.command.atari("WUMPUS", function(){
+                $('#katra-source').text(katra.getText());
+            });
 
         }
     })
