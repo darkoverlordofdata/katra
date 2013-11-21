@@ -25,6 +25,10 @@
             height:400px;
             overflow:auto;
         }
+        iframe {
+            height: 400px;
+            width: 100%;
+        }
 
     </style>
     <link href="/katra/css/katra.css" rel="stylesheet">
@@ -90,34 +94,17 @@
 
 
 <div class="row-fluid">
-    <div class="span12">
-        <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">Repl</a></li>
-            <li><a href="#code" data-target="#katra-tab-code" data-toggle="tab">Source Code</a></li>
-            <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
-        </ul>
-
-        <div class="tab-content">
-
-            <div class="tab-pane active" id="katra-tab-content">
-                <p>Try katra repl.</p>
-            </div>
-
-            <div class="tab-pane" id="katra-tab-code">
-                <div class="katra-source-panel katra-border">
-                    <pre id="katra-source" class="katra-source prettyprint lang-basic"></pre>
-                </div>
-            </div>
-
-            <div class="tab-pane" id="katra-tab-repl">
-                <div class="console">
-                </div>
-            </div>
-
-        </div>
-    </div>
+    <p><h3>Announcing Katra BASIC.</h3>
+<p>Try the katra repl window. Select Help to view keywords and commands.</p>
+<pre>
+10 LET X = 42
+20 PRINT "THE ANSWER IS";X
+30 END
+</pre>
+<p>Paste the example above into the repl. Then type LIST or RUN.</p></p>
+    <iframe seamless src="/katra/katra.html"></iframe>
 </div>
-<p><a href="/katra">back</a></p>
+<p><a href="/katra/">back</a></p>
 
 
 <hr />
