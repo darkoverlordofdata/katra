@@ -1,9 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
-    <link href="/katra/css/katra.css" rel="stylesheet">
+    <title>Katra</title>
     <link href="//cdn.darkoverlordofdata.com/ico/favicon.png" rel="shortcut icon" type="image/png">
+    <style>
+        html, body {
+            /*background:#333;*/
+            padding: 0;
+            margin: 0;
+            border: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        div.console {
+            word-wrap: break-word;
+        }
+
+        div.console {
+            font-size: 14px;
+            margin-top: 1em;
+        }
+
+        div.console div.jquery-console-inner {
+            width:100%;
+            height:100%;
+            background:#333;
+            padding:0.5em;
+            overflow:auto;
+            color:#fff;
+            font-family:monospace;
+        }
+
+        div.console div.jquery-console-prompt-box {
+            color:#fff;
+            font-family:monospace;
+        }
+
+        div.console div.jquery-console-focus span.jquery-console-cursor {
+            background:#fefefe;
+            color:#333;
+            font-weight:bold
+        }
+
+        div.console div.jquery-console-message-error {
+            color:#ef0505;
+            font-family:sans-serif;
+            font-weight:bold;
+            padding:0.1em;
+        }
+
+        div.console div.jquery-console-message-value {
+            color:#1ad027;
+            font-family:monospace;
+            padding:0.1em;
+        }
+
+        div.console div.jquery-console-message-type {
+            color:#52666f;
+            font-family:monospace;
+            padding:0.1em;
+        }
+
+        div.console span.jquery-console-prompt-label {
+            font-weight:bold
+        }
+
+        div.katra-logger-panel {
+            font-weight:bold
+        }
+
+    </style>
 </head>
 <body>
 <div class="console">
@@ -26,16 +93,34 @@ function parseQuery() {
 }
 
 (function() {
+    var setSize = function() {
+        $("div.console div.jquery-console-inner").offset({top: 0, left: 0});
+        $("div.console div.jquery-console-inner").width($(this).width()-12);
+        $("div.console div.jquery-console-inner").height($(this).height()-12);
+    };
+
     $(function() {
+
+        $(window).resize(function() {
+            if(this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 500);
+        });
+
+        $(window).bind('resizeEnd', setSize);
+
 
         if ($('.console')) {
             katra.setRoot("/katra/");
             arg = parseQuery();
             if (arg.command) {
                 katra.command[arg.command](arg.program);
+                document.title += ' - ['+arg.program+']';
             }
 
         }
+        setSize();
     })
 }).call(this);
 </script>
