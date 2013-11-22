@@ -667,7 +667,7 @@
         });
       },
       cls: function() {
-        return _con.reset();
+        return _con.clear();
       },
       del: function($0) {
         var $end, $lineno, $start, _i, _ref1, _results;
