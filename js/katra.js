@@ -587,6 +587,12 @@
 
     Console.prototype.mode = MODE_REPL;
 
+    Console.prototype.cancelHandle = function() {
+      _eop = true;
+      _con.println('CTRL-C');
+      return _run();
+    };
+
     Console.prototype.commandHandle = function($line) {
       var $item, $ix, $name, _i, _j, _len, _len1, _ref1, _ref2;
       switch (this.mode) {
