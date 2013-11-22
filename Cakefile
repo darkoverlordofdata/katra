@@ -18,7 +18,6 @@ util = require 'util'
 {exec} = require 'child_process'
 
 
-
 #
 # Build from a context free grammar (BNF)
 #

@@ -1,17 +1,7 @@
-<p>
-<dl>
-    <p>
-        <dt><strong>katra</strong></dt>
-    <dd><em>Living essence or spirit.</em></dd>
-</p>
-</dl>
-</p>
-<h5>Games</h5>
+<h4>Katra</h4>
 <ul>
-    <ul>
-    {% for post in site.posts_asc limit: 10 %}
-    <li><a href="/katra{{ post.url }}">{{ post.title }}</a></li>
+    {% for post in site.posts_asc limit: 5 %}
+    <li><a href="/katra/{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
 </ul>
-
 

@@ -177,7 +177,6 @@ UCASE               [Uu][Cc][Aa][Ss][Ee][\$]
 #   Commands
 #
 */
-{SCR}                   return 'SCR';
 {TRON}                  return 'TRON';
 {TROFF}                 return 'TROFF';
 

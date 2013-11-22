@@ -632,6 +632,9 @@
     getText: function() {
       return _txt;
     },
+    focus: function() {
+      return _con.focus();
+    },
     parse: _parse,
     command: {
       append: function($0) {

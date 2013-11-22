@@ -689,6 +689,7 @@ katra =
 
   setRoot: _fs.setRoot
   getText: () -> _txt
+  focus: () -> _con.focus()
   #
   # Parse
   #

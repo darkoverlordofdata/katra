@@ -106,6 +106,12 @@ window.rte =
       #@console.setMode $set
       return
 
+    reset: () =>
+      @console.reset();
+
+    focus: () =>
+      @console.typer.focus()
+
     debug: ($text) =>
       @console.inner.append String($text).replace(/\ /g, "&nbsp;")+"<br />"
 

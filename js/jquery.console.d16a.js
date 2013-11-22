@@ -105,13 +105,18 @@
 		var inner = $('<div class="jquery-console-inner"></div>');
 		// erjiang: changed this from a text input to a textarea so we
 		// can get pasted newlines
-		var typer = $('<textarea class="jquery-console-typer"></textarea>');
+		//var typer = $('<textarea class="jquery-console-typer"></textarea>');
+    // d16a: changed to content editable
+    var typer = $('<div class="jquery-console-typer" contenteditable></div>');
 		// Prompt
 		var promptBox;
 		var prompt;
 		var promptLabel = config && config.promptLabel? config.promptLabel : "> ";
 		var continuedPromptLabel = config && config.continuedPromptLabel?
 		config.continuedPromptLabel : "> ";
+    // d16a: add altPrompt
+    var altPrompt = config && config.altPrompt ? config.altPrompt : "? ";
+    var altMode = false;
 		var column = 0;
 		var promptText = '';
 		var restoreText = '';
@@ -156,6 +161,12 @@
 			extern.typer = typer;
 			extern.scrollToBottom = scrollToBottom;
 		})();
+
+    ////////////////////////////////////////////////////////////////////////
+    // d16a: Set Mode
+    extern.setMode = function(mode) {
+      altMode = mode;
+    };
 
 		////////////////////////////////////////////////////////////////////////
 		// Reset terminal
@@ -214,7 +225,10 @@
 			enableInput();
 			promptBox = $('<div class="jquery-console-prompt-box"></div>');
 			var label = $('<span class="jquery-console-prompt-label"></span>');
-			var labelText = extern.continuedPrompt? continuedPromptLabel : promptLabel;
+      if (altMode)
+        var labelText = extern.continuedPrompt? continuedPromptLabel : promptLabel;
+      else
+  			var labelText = altPrompt;
 			promptBox.append(label.text(labelText).show());
 			label.html(label.html().replace(' ','&nbsp;'));
 			prompt = $('<span class="jquery-console-prompt"></span>');
@@ -308,9 +322,7 @@
 					)
 				){
 					typer.consoleInsert(keyCode);
-          /* d16a */
-          scrollToBottom();
-        }
+				}
 			}
 			if (isWebkit) return false;
 		});

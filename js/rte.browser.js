@@ -44,6 +44,8 @@
           $prompt = '> ';
         }
         this.debug = __bind(this.debug, this);
+        this.focus = __bind(this.focus, this);
+        this.reset = __bind(this.reset, this);
         this.pause = __bind(this.pause, this);
         this.commandValidate = __bind(this.commandValidate, this);
         this.promptLabel = $prompt;
@@ -68,6 +70,14 @@
       };
 
       Console.prototype.pause = function($set) {};
+
+      Console.prototype.reset = function() {
+        return this.console.reset();
+      };
+
+      Console.prototype.focus = function() {
+        return this.console.typer.focus();
+      };
 
       Console.prototype.debug = function($text) {
         return this.console.inner.append(String($text).replace(/\ /g, "&nbsp;") + "<br />");

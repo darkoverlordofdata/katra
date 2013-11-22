@@ -1,11 +1,11 @@
 {% include header.html %}
 
 <div class="row-fluid">
-    <div class="span8">
+    <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
             <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">{{ page.title }}</a></li>
-            <li><a href="#code" data-target="#katra-tab-code" data-toggle="tab">code</a></li>
-            <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">run</a></li>
+            <li><a href="#code" data-target="#katra-tab-code" data-toggle="tab">Source Code</a></li>
+            <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
         </ul>
 
         <div class="tab-content">
@@ -16,10 +16,9 @@
 
             <div class="tab-pane" id="katra-tab-code">
                 <div class="katra-source-panel katra-border">
-                    <pre id="katra-source" class="katra-source prettyprint"></pre>
+                    <pre id="katra-source" class="katra-source prettyprint lang-basic"></pre>
                 </div>
             </div>
-
 
             <div class="tab-pane" id="katra-tab-repl">
                 <div class="console">
@@ -27,13 +26,8 @@
             </div>
 
         </div>
-
-    </div>
-    <div class="span4">
-        {% include sidebar.html %}
     </div>
 </div>
-
-<p><a href="/katra">back</a></p>
+<p><a href="/katra/">back</a></p>
 
 {% include footer.html %}

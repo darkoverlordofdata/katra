@@ -1,32 +1,18 @@
 ---
 layout: default
+active: home
 ---
 <p>
-    <span style="font-size:28px;">Katra </span>has one goal - to run StarTrek.bas games from the golden age of basic programming.</p>
+    <span style="font-size:28px;">Katra </span>has one goal - to run
+    <a href="/katra/2013/11/18/startrek/">StarTrek.bas</a>
+    games from the golden age of basic programming.</p>
 <div class="hero-unit">
+    <h4>Games</h4>
+    <ul>
+        {% for post in site.posts_asc limit: 5 %}
+        <li><a href="/katra{{ post.url }}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
 
-    <em><strong><pre>
-    COMMAND:?8
 
-       0 = SET COURSE
-       1 = SHORT RANGE SENSOR SCAN
-       2 = LONG RANGE SENSOR SCAN
-       3 = FIRE PHASERS
-       4 = FIRE PHOTON TORPEDOES
-       5 = SHIELD CONTROL
-       6 = DAMAGE CONTROL REPORT
-       7 = CALL ON LIBRARY COMPUTER
-
-    COMMAND:?4
-    TORPEDO COURSE (1-9):?3
-    TORPEDO TRACK:
-                   7,4
-                   6,4
-                   5,4
-                   4,4
-    *** KLINGON DESTROYED ***
-
-    </pre></strong></em>
-
-    <a href="/katra/2013/11/18/startrek/">Beam me up...</a>
 </div>
