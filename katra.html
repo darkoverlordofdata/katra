@@ -116,7 +116,9 @@ function parseQuery() {
             arg = parseQuery();
             if (arg.command) {
                 katra.command[arg.command](arg.program);
-                document.title += ' - ['+arg.program+']';
+            }
+            else {
+                document.title = "Katra BASIC"
             }
 
         }

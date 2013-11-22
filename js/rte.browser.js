@@ -112,6 +112,13 @@
 
       FileSystem.prototype.readFile = function($filename, $next) {
         return $.get($root + $filename + '.bas', function($data) {
+          var $name;
+          $name = $filename.split('/').pop();
+          if (/\[.*\]$/.test(document.title)) {
+            document.title.replace(/\[(.*)\]$/, $name);
+          } else {
+            document.title += " - [" + $name + "]";
+          }
           $data = _parse(String($data));
           if (isNaN($data[0][0])) {
             $data.shift();
