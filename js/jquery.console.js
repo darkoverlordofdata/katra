@@ -105,8 +105,8 @@
 		var inner = $('<div class="jquery-console-inner"></div>');
 		// erjiang: changed this from a text input to a textarea so we
 		// can get pasted newlines
-	  //	var typer = $('<textarea class="jquery-console-typer"></textarea>');
-    var typer = $('<div contenteditable class="jquery-console-typer"></div>');
+	  	var typer = $('<textarea class="jquery-console-typer"></textarea>');
+//    var typer = $('<div contenteditable class="jquery-console-typer"></div>');
 		// Prompt
 		var promptBox;
 		var prompt;
@@ -159,25 +159,45 @@
 		})();
 
 		////////////////////////////////////////////////////////////////////////
-		// Reset terminal
-		extern.reset = function(){
-			var welcome = (typeof config.welcomeMessage != 'undefined');
-			inner.parent().fadeOut(function(){
-				inner.find('div').each(function(){
-					if (!welcome) {
-						$(this).remove();
-			} else {
-			welcome = false;
-			}
-				});
-				newPromptBox();
-				inner.parent().fadeIn(function(){
-					inner.addClass('jquery-console-focus');
-					typer.focus();
-				});
-			});
-		};
+		// Syncronize the cursor to the terminal
 
+    extern.sync = function(dur){
+
+      dur = dur || 1;
+
+      inner.parent().fadeOut(dur, function(){
+
+        inner.find('div span span.jquery-console-cursor').each(function(){
+          //$(this).removeClass('jquery-console-cursor');
+          $(this).html('');
+        });
+        newPromptBox();
+        inner.parent().fadeIn(dur, function(){
+          inner.addClass('jquery-console-focus');
+          typer.focus();
+        });
+      });
+    };
+    ////////////////////////////////////////////////////////////////////////
+    // Reset terminal
+    extern.reset = function(){
+
+      var welcome = (typeof config.welcomeMessage != 'undefined');
+      inner.parent().fadeOut(function(){
+        inner.find('div').each(function(){
+          if (!welcome) {
+            $(this).remove();
+          } else {
+            welcome = false;
+          }
+        });
+        newPromptBox();
+        inner.parent().fadeIn(function(){
+          inner.addClass('jquery-console-focus');
+          typer.focus();
+        });
+      });
+    };
 		////////////////////////////////////////////////////////////////////////
 		// Reset terminal
 		extern.notice = function(msg,style){
@@ -199,7 +219,7 @@
 			}
 			var h = n.height();
 			n.css({height:'0px',visibility:'visible'})
-				.animate({height:h+'px'},function(){
+				. animate({height:h+'px'},function(){
 					if (!focused) inner.css({opacity:0.5});
 				});
 			n.css('cursor','default');

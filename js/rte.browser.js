@@ -49,7 +49,7 @@
 
       Console.prototype.promptHistory = true;
 
-      Console.prototype.welcomeMessage = 'Type RUN to start.';
+      Console.prototype.welcomeMessage = 'Katra BASIC';
 
       function Console(element, prompt) {
         this.element = element != null ? element : '.console';
@@ -83,7 +83,7 @@
       Console.prototype.pause = function($set) {};
 
       Console.prototype.reset = function() {
-        return this.console.reset();
+        return this.console.sync();
       };
 
       Console.prototype.focus = function() {

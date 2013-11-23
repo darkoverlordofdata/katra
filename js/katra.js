@@ -178,7 +178,8 @@
       $init = true;
     }
     _init($init);
-    _con.pause(true);
+    _con.pause();
+    _con.reset();
     _fs.readFile(_qualify($name, $version), function($err, $data) {
       if ($err != null) {
         _con.println($err);
@@ -601,6 +602,7 @@
 
     Console.prototype.cancelHandle = function() {
       _eop = true;
+      _con.reset();
       _con.print('^C');
       return _run();
     };
