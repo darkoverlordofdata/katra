@@ -94,7 +94,7 @@
 
 
 <div class="row-fluid">
-    <p><h3>Katra BASIC.</h3>
+    <p><h3>Katra BASIC</h3>
 <p>Try the katra repl window. Select Help to view keywords and commands.</p>
 <pre>
 10 LET X = 42
@@ -106,7 +106,7 @@
 </p>
     <a target="repl" href="/katra/katra.html">launch...</a>
 
-    <iframe seamless src="/katra/repl.html"></iframe>
+    <iframe seamless src="/katra/katra.html"></iframe>
 </div>
 <p><a href="/katra/">back</a></p>
 
@@ -119,37 +119,9 @@
 </div>
 <script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>
 <script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
 
 <script src='/katra/js/prettify.js'></script>
 <script src='/katra/js/lang-basic.js'></script>
-<script src='/katra/js/rte.browser.js'></script>
-<script src='/katra/js/katra.js'></script>
-<script src='/katra/js/kc.js'></script>
-<script>
 
-(function() {
-    $(function() {
-
-        katra.setRoot("/katra/");
-
-        $('a[data-toggle="tab"]').live('click', function (e) {
-            if (/\#repl$/.test(e.target)) {
-                katra.focus();
-            }
-        });
-
-        
-        katra.command.("", function(){
-            $('#katra-source').text(katra.getText());
-            prettyPrint();
-        });
-        
-
-
-    })
-}).call(this);
-</script>
 </body>
 </html>

@@ -97,7 +97,6 @@
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
             <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">StarTrek</a></li>
-            <li><a href="#code" data-target="#katra-tab-code" data-toggle="tab">Source Code</a></li>
             <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
         </ul>
 
@@ -111,15 +110,8 @@ Well, it was 1975, and this was about as good as it got!
                 <a target="GET-STTR1" href="/katra/katra.html?command=get&amp;program=GET-STTR1">launch...</a>
             </div>
 
-            <div class="tab-pane" id="katra-tab-code">
-                <div class="katra-source-panel katra-border">
-                    <pre id="katra-source" class="katra-source prettyprint lang-basic"></pre>
-                </div>
-            </div>
-
             <div class="tab-pane" id="katra-tab-repl">
-                <div class="console">
-                </div>
+                <iframe seamless src="/katra/katra.html?command=get&amp;program=GET-STTR1"></iframe>
             </div>
 
         </div>
@@ -136,37 +128,9 @@ Well, it was 1975, and this was about as good as it got!
 </div>
 <script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>
 <script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
 
 <script src='/katra/js/prettify.js'></script>
 <script src='/katra/js/lang-basic.js'></script>
-<script src='/katra/js/rte.browser.js'></script>
-<script src='/katra/js/katra.js'></script>
-<script src='/katra/js/kc.js'></script>
-<script>
 
-(function() {
-    $(function() {
-
-        katra.setRoot("/katra/");
-
-        $('a[data-toggle="tab"]').live('click', function (e) {
-            if (/\#repl$/.test(e.target)) {
-                katra.focus();
-            }
-        });
-
-        
-        katra.command.get("GET-STTR1", function(){
-            $('#katra-source').text(katra.getText());
-            prettyPrint();
-        });
-        
-
-
-    })
-}).call(this);
-</script>
 </body>
 </html>
