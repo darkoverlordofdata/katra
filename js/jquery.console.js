@@ -111,6 +111,8 @@
 		var promptBox;
 		var prompt;
 		var promptLabel = config && config.promptLabel? config.promptLabel : "> ";
+    var promptRestore = promptLabel;
+    var promptAlt = config && config.promptAlt? config.promptAlt : "? ";
 		var continuedPromptLabel = config && config.continuedPromptLabel?
 		config.continuedPromptLabel : "> ";
 		var column = 0;
@@ -158,6 +160,19 @@
 			extern.typer = typer;
 			extern.scrollToBottom = scrollToBottom;
 		})(config.exec);
+
+
+    ////////////////////////////////////////////////////////////////////////
+    // Toggle prompt betweet > and ?
+
+    extern.setPrompt = function(prompt) {
+      if (prompt) {                   // Set
+        promptLabel = promptAlt;      // default: ?
+      }
+      else {                          // Reset
+        promptLabel = promptRestore;  // default: >
+      }
+    }
 
 		////////////////////////////////////////////////////////////////////////
 		// Syncronize the cursor to the terminal
