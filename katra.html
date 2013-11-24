@@ -2,9 +2,12 @@
 <html>
 <head>
     <title>Katra</title>
-    <link href='//fonts.googleapis.com/css?family=Arimo:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href="//cdn.darkoverlordofdata.com/css/bootstrap-arimo.min.css" rel="stylesheet">
-    <link href="//cdn.darkoverlordofdata.com/ico/favicon.png" rel="shortcut icon" type="image/png">
+    <!--<link href='//fonts.googleapis.com/css?family=Arimo:400,700,400italic,700italic' rel='stylesheet' type='text/css'>-->
+    <!--<link href="//cdn.darkoverlordofdata.com/css/bootstrap-arimo.min.css" rel="stylesheet">-->
+    <!--<link href="//cdn.darkoverlordofdata.com/ico/favicon.png" rel="shortcut icon" type="image/png">-->
+    <link href='/katra/assets/css.css' rel='stylesheet' type='text/css'>
+    <link href="/katra/assets/bootstrap-arimo.min.css" rel="stylesheet">
+    <link href="/katra/assets/favicon.png" rel="shortcut icon" type="image/png">
     <style>
         html, body {
             /*background:#333;*/
@@ -13,7 +16,7 @@
             border: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+               overflow: hidden;
         }
         div.console {
             word-wrap: break-word;
@@ -78,7 +81,8 @@
 <div class="console">
 </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
+<script src="/katra/assets/jquery.min.js"></script>
 <!--<script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>-->
 <script src='/katra/js/jquery.console.js'></script>
 <script src='/katra/js/rte.browser.js'></script>
@@ -118,10 +122,12 @@ function parseQuery() {
             katra.setRoot("/katra/");
             arg = parseQuery();
             if (arg.command) {
+                katra.welcome('Running ' +arg.program.substr(1));
                 katra.command[arg.command](arg.program);
             }
             else {
                 document.title = "Katra BASIC"
+                katra.start();
             }
 
         }

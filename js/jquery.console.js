@@ -138,25 +138,26 @@
 
 		////////////////////////////////////////////////////////////////////////
 		// Main entry point
-		(function(){
+		(function(exec){
 			container.append(inner);
 			inner.append(typer);
 			typer.css({position:'absolute',top:0,left:'-9999px'});
 			if (config.welcomeMessage)
 				message(config.welcomeMessage,'jquery-console-welcome');
-			newPromptBox();
-			if (config.autofocus) {
-				inner.addClass('jquery-console-focus');
-				typer.focus();
-				setTimeout(function(){
-					inner.addClass('jquery-console-focus');
-					typer.focus();
-				},100);
-			}
+      if (exec !== true)
+  			newPromptBox();
+      if (config.autofocus) {
+        inner.addClass('jquery-console-focus');
+        typer.focus();
+        setTimeout(function(){
+          inner.addClass('jquery-console-focus');
+          typer.focus();
+        },100);
+      }
 			extern.inner = inner;
 			extern.typer = typer;
 			extern.scrollToBottom = scrollToBottom;
-		})();
+		})(config.exec);
 
 		////////////////////////////////////////////////////////////////////////
 		// Syncronize the cursor to the terminal
@@ -197,6 +198,9 @@
           typer.focus();
         });
       });
+
+
+
     };
 		////////////////////////////////////////////////////////////////////////
 		// Reset terminal

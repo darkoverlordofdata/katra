@@ -72,6 +72,8 @@
         return true;
       };
 
+      Console.prototype.reset = function() {};
+
       Console.prototype.debug = function($text) {
         return process.stdout.write($text.blue + '\n');
       };
