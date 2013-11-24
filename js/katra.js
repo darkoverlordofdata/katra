@@ -600,9 +600,7 @@
 
     function Console($welcome) {
       this.commandHandle = __bind(this.commandHandle, this);
-      if ($welcome !== '') {
-        this.welcomeMessage = $welcome;
-      }
+      this.welcomeMessage = $welcome;
       Console.__super__.constructor.call(this);
     }
 
@@ -690,6 +688,21 @@
     },
     welcome: function($str) {
       return _wel = $str;
+    },
+    basic: function($args) {
+      switch ($args.basic) {
+        case 'atari':
+          return _exec(V_ATARI, $args.program);
+        case 'gwbasic':
+          return _exec(V_GWBASIC, $args.program);
+        case 'hp2k':
+          return _exec(V_HP2000, $args.program);
+        default:
+          if (typeof $args === 'string') {
+            _wel = $args;
+          }
+          return _con.reset();
+      }
     },
     parse: _parse,
     command: {

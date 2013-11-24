@@ -93,14 +93,18 @@ function parseQuery() {
     var result = {};
     pairs = window.location.search.substring(1).split('&');
     for (i in pairs) {
-        pair = pairs[i].split('=')
-        result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1])
+        if (pairs[i].length > 0) {
+            pair = pairs[i].split('=')
+            result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1])
+        }
     }
     return result;
 }
 
 (function() {
-    var setSize = function() {
+
+    var args,
+        setSize = function() {
         $("div.console div.jquery-console-inner").offset({top: 0, left: 0});
         $("div.console div.jquery-console-inner").width($(this).width()-12);
         $("div.console div.jquery-console-inner").height($(this).height()-12);
@@ -120,15 +124,11 @@ function parseQuery() {
 
         if ($('.console')) {
             katra.setRoot("/katra/");
-            arg = parseQuery();
-            if (arg.command) {
-                katra.welcome('Running ' +arg.program.substr(1));
-                katra.command[arg.command](arg.program);
+            args = parseQuery();
+            if (Object.keys(args).length == 0) {
+                document.title = args = "Katra BASIC";
             }
-            else {
-                document.title = "Katra BASIC"
-                katra.start();
-            }
+            katra.basic(args);
 
         }
         setSize();
