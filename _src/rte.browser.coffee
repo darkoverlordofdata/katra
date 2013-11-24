@@ -15,33 +15,35 @@
 #
 MODE_REPL       = 0     # Console REPL mode
 MODE_RUN        = 1     # Console RUN mode
-BOM             = 65279   # MS Byte Order Marker
+
+_ctrlCodes =
+# C-r
+  82: -> @reset()
+
+
+_fix = ($text) ->
+  $text.replace(/\ /g, "&nbsp;").replace(/\n/g, "<br />")
 
 #
-# Parse code into lines
+# Implements the same syntax as ajax
 #
-# Cleans up the raw source code
-#
-# @param  [String]  code  the raw source code
-# @return [Array<String>]
-#
-_parse = ($code) ->
+_get = ($name, $next) ->
+  if localStorage[$name]?
+    $next localStorage[$name]
+  else
+    $next ''
 
-  #
-  # skip over a byte order marker
-  #
-  $code = $code.slice(1) if $code.charCodeAt(0) is BOM
+_set_title = ($filename) ->
 
-  #
-  # normalize CR/LF
-  #
-  $code = ($code + '\n')    # make sure there is an ending LF
-  .replace(/\r/g,  '\n')    # replace CR's with LF's
-  .replace(/\n+/g, '\n')    # remove duplicate LF's
-  .split('\n')              # and split into lines
+    $name = $filename.split('/').pop()
+
+    if /\[.*\]$/.test document.title
+      document.title.replace(/\[(.*)\]$/, $name)
+    else
+      document.title += " - [#{$name}]"
 
 
-window.rte =
+window.rte = rte =
 
   #
   # wrapper for jquery.console
@@ -59,8 +61,9 @@ window.rte =
     animateScroll: true
     autofocus: true
     promptLabel: ''
+    promptAlt: '?'
     promptHistory: true
-    welcomeMessage: 'Type RUN to start.'
+    welcomeMessage: ''
 
     #
     # initialize a console
@@ -69,9 +72,9 @@ window.rte =
     # @param  [String]  prompt  string to print
     # @return none
     #
-    constructor: (@element = '.console', $prompt = '> ') ->
+    constructor: (@element = '.console', @prompt = '> ') ->
 
-      @promptLabel = $prompt
+      @promptLabel = @prompt
       @clear()
 
     #
@@ -103,17 +106,31 @@ window.rte =
     # @return [Void]
     #
     pause: ($set) =>
-      #@console.setMode $set
       return
 
     reset: () =>
-      @console.reset();
+      @console.sync()
 
     focus: () =>
       @console.typer.focus()
 
+    setPrompt: ($prompt) =>
+      @console.setPrompt $prompt
+
     debug: ($text) =>
-      @console.inner.append String($text).replace(/\ /g, "&nbsp;")+"<br />"
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix("#{$text}\n")
+
+    #
+    # hilite output
+    #
+    # @param  [String]  text  text to print
+    # @return none
+    #
+    hilite: ($text) ->
+
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix("#{$text}\n")
 
     #
     # print to console
@@ -122,7 +139,8 @@ window.rte =
     # @return none
     #
     print: ($text) ->
-      @console.inner.append $text.replace(/\ /g, "&nbsp;")
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix($text)
 
     #
     # print with newline to console
@@ -131,7 +149,8 @@ window.rte =
     # @return none
     #
     println: ($text) ->
-      @console.inner.append $text.replace(/\ /g, "&nbsp;")+"<br />"
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix("#{$text}\n")
 
     #
     # create a new console, erasing the previuos
@@ -142,6 +161,10 @@ window.rte =
       $(@element).html ''
       @console = $(@element).console(@)
 
+      @console.inner.offset({top: 0, left: 0});
+      @console.inner.width($(document).width()-12);
+      @console.inner.height($(document).height()-12);
+      #@console.sync()
 
 
 
@@ -151,16 +174,99 @@ window.rte =
 
     setRoot: ($path) ->
       $root = $path
-      
+
+    #
+    # read from file
+    #
+    # @param  [Integer] version version of basic
+    # @param  [String]  filename
+    # @param  [Function]  next  callback
+    # @return [Void]
+    #
     readFile: ($filename, $next) ->
-      $.get $root+$filename+'.bas', ($data) ->
 
-        $data = _parse(String($data))
-        $data.shift() if isNaN($data[0][0])
-        $data.shift() if $data[0] is ""
-        $next null, $data.join('\n')
+      if localStorage[$filename]?
+        _get $filename, ($data) ->
+          _set_title $filename
+          $next null, String($data);
+
+      else
+        $.get $root+$filename+'.bas', ($data) ->
+          _set_title $filename
+          $next null, String($data);
 
 
+    #
+    # write to file
+    #
+    # @param  [String]  filename
+    # @param  [String]  data
+    # @param  [Function]  next  callback
+    # @return [Void]
+    #
     writeFile: ($filename, $data, $next) ->
+      localStorage[$filename] = $data
+      $next null
 
+    #
+    # delete file
+    #
+    # @param  [String]  filename
+    # @param  [Function]  next  callback
+    # @return [Void]
+    #
     deleteFile: ($filename, $next) ->
+      delete localStorage[$filename]
+      $next null
+
+    #
+    # read dir
+    #
+    # @param  [Integer]  dir  CATALOG | GROUP | LIBRARY
+    # @param  [Function]  next  callback
+    # @return [Void]
+    #
+    readDir: ($dir, $next) ->
+
+      $next ($name+'.bas' for $name, $path of _data[$dir]).concat(
+        if $dir is 'CATALOG'
+          ($name.split('/').pop()+'.bas' for $name, $value of localStorage)
+        else
+          [])
+
+
+
+_data =
+  ATARI:
+    SRTRK   : 'bas/atari/SRTRK.bas'
+    WUMPUS  : 'bas/atari/WUMPUS.bas'
+  GWBASIC:
+    eliza   : 'bas/gwbasic/eliza.bas'
+    romulan : 'bas/gwbasic/romulan.bas'
+  GROUP:
+    TREK0   : 'bas/hp2k/group/TREK0.bas'
+    TREK1   : 'bas/hp2k/group/TREK1.bas'
+    TREK2   : 'bas/hp2k/group/TREK2.bas'
+    TREK3   : 'bas/hp2k/group/TREK3.bas'
+    TREK4   : 'bas/hp2k/group/TREK4.bas'
+    TREK73  : 'bas/hp2k/group/TREK73.bas'
+  LIBRARY:
+    TRADER  : 'bas/hp2k/system/TRADER.bas'
+    TRADES  : 'bas/hp2k/system/TRADES.bas'
+  TEST:
+    data    : 'bas/hp2k/test/data.bas'
+    def     : 'bas/hp2k/test/def.bas'
+    dim     : 'bas/hp2k/test/dim.bas'
+    for     : 'bas/hp2k/test/for.bas'
+    gosub   : 'bas/hp2k/test/gosub.bas'
+    if      : 'bas/hp2k/test/if.bas'
+    input   : 'bas/hp2k/test/input.bas'
+    let     : 'bas/hp2k/test/let.bas'
+    numbers : 'bas/hp2k/test/numbers.bas'
+    print   : 'bas/hp2k/test/print.bas'
+    test    : 'bas/hp2k/test/test.bas'
+    unary   : 'bas/hp2k/test/unary.bas'
+  CATALOG:
+    OREGON  : 'bas/hp2k/OREGON.bas'
+    STRTR1  : 'bas/hp2k/STRTR1.bas'
+    STTR1   : 'bas/hp2k/STTR1.bas'

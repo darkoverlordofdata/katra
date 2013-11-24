@@ -108,6 +108,8 @@ module.exports =
       @vars = $vars
       true
 
+    reset: () ->
+      return
     #
     # debug/tron output
     #
@@ -189,7 +191,7 @@ module.exports =
     # @return [Void]
     #
     writeFile: ($filename, $data, $next) ->
-      fs.writeFile qualify($filename)+'.bas', "#{$filename}\n\n#{$data}", $next
+      fs.writeFile path.join($root, $filename)+'.bas', "#{$filename}\n\n#{$data}", $next
 
     #
     # delete file
@@ -199,7 +201,7 @@ module.exports =
     # @return [Void]
     #
     deleteFile: ($filename, $next) ->
-      fs.unlink qualify($filename)+'.bas', $next
+      fs.unlink path.join($root, $filename)+'.bas', $next
 
     #
     # read dir
@@ -210,8 +212,15 @@ module.exports =
     #
     readDir: ($dir, $next) ->
 
-      #[$dir, $next] = ['CATALOG', $dir] unless $next?
-
-      fs.readdir $dir, ($err, $files) ->
+      fs.readdir $root+_data[$dir], ($err, $files) ->
         if $err? then $next []
-        else $next $files
+        else $next ($name for $name in $files when /.*\.bas$/.test $name)
+
+
+_data =
+  ATARI   : 'bas/atari/'
+  GWBASIC : 'bas/gwbasic/'
+  GROUP   : 'bas/hp2k/group/'
+  LIBRARY : 'bas/hp2k/system/'
+  TEST    : 'bas/hp2k/test/'
+  CATALOG : 'bas/hp2k/'

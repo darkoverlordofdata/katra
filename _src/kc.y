@@ -79,32 +79,35 @@ Line
 #
 #   Commands - only available using REPL
 #
+#   force a return value TRUE.
+#
 */
 Command
-    : ATARI STRING                      -> command.atari($2)
-    | CLS                               -> command.cls()
-    | GWBASIC STRING                    -> command.gwbasic($2)
-    | TRON                              -> command.tron()
-    | TROFF                             -> command.troff()
+    : ATARI STRING                      { command.atari($2); return true;}
+    | CLS                               { command.cls(); return true;}
+    | GWBASIC STRING                    { command.gwbasic($2); return true;}
+    | TRON                              { command.tron(); return true;}
+    | TROFF                             { command.troff(); return true;}
 
-    | APPEND                            -> command.append($1)
-    | CATALOG                           -> command.cat('CATALOG')
-    | DELETE                            -> command.del($1)
-    | DIR                               -> command.dir($1)
-    | EXECUTE                           -> command.exec($1)
-    | FILES                             -> command.files($1)
-    | GET                               -> command.get($1);
-    | GROUP                             -> command.cat('GROUP')
-    | INTEGER                           -> command.del("del-"+$1)
-    | LIBRARY                           -> command.cat('LIBRARY')
-    | LIST                              -> command.list($1)
-    | NAME                              -> command.name($1)
-    | PURGE                             -> command.purge($1)
-    | RENUMBER                          -> command.renum($1)
-    | QUIT                              -> command.quit()
-    | RUN                               -> command.run($1)
-    | SAVE                              -> command.save()
-    | SCRATCH                           -> command.scr()
+    | APPEND                            { command.append($1); return true;}
+    | CATALOG                           { command.cat('CATALOG'); return true;}
+    | DELETE                            { command.del($1); return true;}
+    | DIR                               { command.cat('GWBASIC'); return true;}
+    | EXECUTE                           { command.exec($1); return true;}
+    | FILES                             { command.cat('ATARI'); return true;}
+    | GET                               { command.get($1); return true;}
+    | GROUP                             { command.cat('GROUP'); return true;}
+    | INTEGER                           { command.del("del-"+$1); return true;}
+    | LIBRARY                           { command.cat('LIBRARY'); return true;}
+    | LIST                              { command.list($1); return true;}
+    | NAME                              { command.name($1); return true;}
+    | PURGE                             { command.purge($1); return true;}
+    | RENUMBER                          { command.renum($1); return true;}
+    | QUIT                              { command.quit(); return true;}
+    | RUN                               { command.run($1); return true;}
+    | SAVE                              { command.save(); return true;}
+    | SCRATCH                           { command.scr(); return true;}
+    | TEST                              { command.cat('TEST'); return true;}
     ;
 
 /*

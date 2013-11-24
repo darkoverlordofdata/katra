@@ -4,7 +4,6 @@
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
             <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">{{ page.title }}</a></li>
-            <li><a href="#code" data-target="#katra-tab-code" data-toggle="tab">Source Code</a></li>
             <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
         </ul>
 
@@ -12,17 +11,11 @@
 
             <div class="tab-pane active" id="katra-tab-content">
                 {{ content }}
-            </div>
-
-            <div class="tab-pane" id="katra-tab-code">
-                <div class="katra-source-panel katra-border">
-                    <pre id="katra-source" class="katra-source prettyprint lang-basic"></pre>
-                </div>
+                <a target="{{ page.program }}" href="/katra/katra.html?basic={{ page.basic }}&amp;program={{ page.program }}">launch...</a>
             </div>
 
             <div class="tab-pane" id="katra-tab-repl">
-                <div class="console">
-                </div>
+                <iframe seamless src="/katra/katra.html?basic={{ page.basic }}&amp;program={{ page.program }}"></iframe>
             </div>
 
         </div>

@@ -55,7 +55,7 @@ DIR                 [Dd][Ii][Rr]
 EXE                 [Ee][Xx][Ee][Cc]?[Uu]?[Tt]?[Ee]?[\-]{Filename}
 FIL                 [Ff][Ii][Ll][Ee][Ss]
 GET                 [Gg][Ee][Tt][\-]{Filename}
-GRO                 [Gg][Rr][Oo][Uu]?[Pp]?\s+{Filename}
+GRO                 [Gg][Rr][Oo][Uu]?[Pp]?
 GWB                 [Gg][Ww][Bb]?[Aa]?[Ss]?[Ii]?[Cc]?
 LIB                 [Ll][Ii][Bb][Rr]?[Aa]?[Rr]?[Yy]?
 LIS                 [Ll][Ii][Ss][Tt]?{Lines}?
@@ -65,6 +65,7 @@ REN                 [Rr][Ee][Nn][Uu]?[Mm]?[Bb]?[Ee]?[Rr]?{Lines}?
 RUN                 [Rr][Uu][Nn]{LineNo}?
 SAV                 [Ss][Aa][Vv][Ee]?
 SCR                 [Ss][Cc][Rr][Aa]?[Tt]?[Cc]?[Hh]?
+TES                 [Tt][Ee][Ss][Tt]?
 
 
 
@@ -95,7 +96,6 @@ INPUT               [Ii][Nn][Pp][Uu][Tt]
 INT                 [Ii][Nn][Tt]
 LIN                 [Ll][Ii][Nn]
 LET                 [Ll][Ee][Tt]
-LOAD                [Ll][Oo][Aa][Dd]
 LOG                 [Ll][Oo][Gg]
 MAT                 [Mm][Aa][Tt]
 NEXT                [Nn][Ee][Xx][Tt]
@@ -198,7 +198,7 @@ UCASE               [Uu][Cc][Aa][Ss][Ee][\$]
 {RUN}                   return 'RUN';
 {SAV}                   return 'SAVE';
 {SCR}                   return 'SCRATCH';
-
+{TES}                   return 'TEST';
 
 /*
 #

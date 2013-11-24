@@ -39,15 +39,15 @@ PRINTF = ///    # Printf style format parser
   ([\%ds])      # output specifier
   ///g
 
+__con = null    # console object
+__fs  = null    # file system object
 _ary  = {}      # arrays storage
 _com  = []      # common storage variables
-_con  = null    # console object
 _dat  = []      # data statements
 _dbg  = false   # trace on/off
 _dp   = 0       # data pointer
 _eop  = false   # end of program flag
 _fn   = {}      # user defined functions
-_fs   = null    # file system object
 _gw   = false   # use GW-Basic style strings
 _mrk  = {}      # benchmarks
 _nam  = ''      # workspace name
@@ -60,7 +60,28 @@ _str  = {}      # strings storage
 _txt  = ''      # source text
 _var  = {}      # non-scalar variables storage
 _ver  = 0       # HP2000 | ATARI | GW
+_wel  = ''      # console welcome message
 _xrf  = {}      # line number in _raw[]
+
+
+#
+# Bind to the environment
+#
+# sets up the
+#
+#   Console
+#   FileSystem
+#
+#
+_bind = () ->
+
+  #
+  # @ resolves to the global object
+  #
+  Object.defineProperties @,
+    _con: get: -> if not __con? then __con = new Console(_wel) else __con
+    _fs:  get: -> if not __fs? then __fs = new rte.FileSystem() else __fs
+
 
 #
 # Initialize the program memory
@@ -98,8 +119,9 @@ _eval = ($value) ->
 #
 # Qualify the filename
 #
-# @param  [Mixed] the object to eval
-# @return [Mixed] value
+# @param  [String]  name  the raw file name
+# @param  [String]  version  basic: V_ATARI | V_GWBASIC | V_HP2000
+# @return [String] the qualified file name
 #
 _qualify = ($name, $version = V_HP2000) ->
   switch $version
@@ -111,6 +133,7 @@ _qualify = ($name, $version = V_HP2000) ->
         when "$"    then 'bas/hp2k/system/'+$name[1..]
         when "#"    then 'bas/hp2k/test/'+$name[1..]
         else 'bas/hp2k/'+$name
+
 
 #
 # Clean up the raw source code
@@ -124,6 +147,22 @@ _clean = ($code) ->
   $code = ($code + '\n')    # make sure there is an ending LF
   .replace(/\r/g,  '\n')    # replace CR's with LF's
   .replace(/\n+/g, '\n')    # remove duplicate LF's
+
+#
+# Save the source code
+#
+# @param  [String]  version  basic: V_ATARI | V_GWBASIC | V_HP2000
+# @param  [String]  name  the file path/name
+# @param  [String]  code  the raw source code text
+# @return [Void]
+#
+_save = ($version, $name, $data, $next) ->
+  $name = if $name[0] is '"' then $name[1...-1] else $name
+  _con.pause true
+  _fs.writeFile _qualify($name, $version), $data, () ->
+    $next?()
+    _con.pause false
+  true
 
 
 #
@@ -158,6 +197,7 @@ _load = ($version, $name, $init=true, $next) ->
 _exec = ($version, $name, $init=true) ->
   _init $init
   _con.pause true
+  #_con.reset()
   _fs.readFile _qualify($name, $version), ($err, $data) ->
     if $err? then _con.println $err
     else
@@ -171,6 +211,7 @@ _exec = ($version, $name, $init=true) ->
       _parse _txt
       _start()
       _run()
+      _con.reset()
     _con.pause false
   true
 #
@@ -220,6 +261,7 @@ _run = () ->
       if $statement.code.type is PHASE_EXEC
         _con.debug $lineno+' '+$code.toString() if _dbg
         $wait = $code.eval()
+      _con.setPrompt $wait
       _eop = true if _pc >= _prg.length
 
   catch $e
@@ -635,6 +677,23 @@ class Console extends rte.Console
   # @property [Integer] mode - repl or program execution?
   #
   mode: MODE_REPL
+  exec: true
+
+  constructor: ($welcome) ->
+    @welcomeMessage = $welcome
+    super()
+  #
+  # callback to handle interrupt
+  #
+  # @return none
+  #
+  cancelHandle: () ->
+    _eop = true
+    _con.print '^C'
+    _con.reset()
+    _con.setPrompt false
+    _run()
+    _con.console.scrollToBottom()
 
   #
   # callback to handle the input
@@ -668,37 +727,53 @@ class Console extends rte.Console
           return true
 
       #
-      # Interacive (REPL) 
+      # Interacive (REPL)
       #
       when MODE_REPL
 
         $line = if /\n$/.test($line) then $line else "#{$line}\n"
         _parse $line
-#        try
-#          _parse $line
-#        catch $e
-#          console.log $e
 
-_con = new Console
-_fs = new rte.FileSystem
 #
-# Module Katra
+# Bind to the environmet
 #
+_bind()
+
+#
+# The Katra Public API
 #
 katra =
 
-  setRoot: _fs.setRoot
-  getText: () -> _txt
-  focus: () -> _con.focus()
   #
-  # Parse
+  # main entry point
   #
-  # Main entry point
+  # @param  [Array<String>] args
+  # @return [Void]
   #
-  # @param  [String] code basic code to parse
-  # @return true if successful, else false
+  main: ($args) ->
+    _wel = $args.title ? _wel
+    switch $args.basic
+      when 'atari'    then _exec V_ATARI,   $args.program
+      when 'gwbasic'  then _exec V_GWBASIC, $args.program
+      when 'hp2k'     then _exec V_HP2000,  $args.program
+      else  _con.reset()
+
   #
-  parse: _parse
+  # Set the file system root
+  #
+  # @param  [String]  root  the path to root the file system at
+  # @return [Void]
+  #
+  setRoot: ($root) ->
+    _fs.setRoot $root
+
+  #
+  # Get the raw program text
+  #
+  # @return [String] the program text
+  #
+  getText: () ->
+    _txt
 
   #
   # Command
@@ -707,6 +782,7 @@ katra =
   # Commands cannot occur in a program.
   #
   command:
+
 
     #
     # Load a program from file storage and append to current
@@ -747,7 +823,7 @@ katra =
           $file += " " while $file.length < $cw
           _con.print $file
           _con.println() if ($col++) % $nc is $nc-1
-        _con.print "\n#{_con.prompt}"
+        _con.print "\n#{_con.prompt}" unless window?
 
 
     #
@@ -877,7 +953,7 @@ katra =
     # @return none
     #
     purge: ($0) ->
-      _fs.delete $0.split('-')[1], ($err) ->
+      _fs.deleteFile _qualify($0.split('-')[1], _ver), ($err) ->
         if $err? then _con.println $err
 
 
@@ -904,8 +980,9 @@ katra =
     # @return none
     #
     run: ($0) ->
-      _start()
-      _run()
+      if Object.keys(_raw).length>0
+        _start()
+        _run()
 
     #
     # Save the program
@@ -926,7 +1003,7 @@ katra =
       for [$lineno, $code] in $lines
         $text += $lineno+' '+$code+'\n'
 
-      _fs.writeFile _nam, $text[0...-1], ($err) ->
+      _save _ver, _nam, $text[0...-1], ($err) ->
         if $err? then _con.println $err
 
 

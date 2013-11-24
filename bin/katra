@@ -16,3 +16,4 @@
 #
 
 katra   = require("../js/katra")
+katra.main title: 'Katra BASIC'

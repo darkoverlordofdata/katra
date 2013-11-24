@@ -16,6 +16,11 @@ div.console div.jquery-console-inner {
     color:#fff;
     font-family:monospace;
 }
+.jquery-console-typer:after {
+    content:"?";
+    opacity: 0;
+    animation: cursor 1s infinite;
+}
 
 div.console div.jquery-console-prompt-box {
     color:#fff;
@@ -25,7 +30,7 @@ div.console div.jquery-console-prompt-box {
 div.console div.jquery-console-focus span.jquery-console-cursor {
     background:#fefefe;
     color:#333;
-    font-weight:bold
+    font-weight:bold;
 }
 
 div.console div.jquery-console-message-error {
@@ -55,3 +60,20 @@ div.katra-logger-panel {
     font-weight:bold
 }
 
+@keyframes cursor {
+    0% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

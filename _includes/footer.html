@@ -3,41 +3,15 @@
 <p></p>
 <p>Projects by Dark Overlord of Data</p>
 <p><a href="/katra">Katra</a> BASIC language interpreter in CoffeeScript</p>
-<p><a href="http://expresso.darkoverlordofdata.com">Exspresso</a> A CoffeeScript MVC Web Framework</p>
+<p><a href="http://exspresso.darkoverlordofdata.com">Exspresso</a> A CoffeeScript MVC Web Framework</p>
 </div>
-<script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>
-<script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script src='//cdn.darkoverlordofdata.com/js/jquery.console.js'></script>
+<!--<script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>-->
+<!--<script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>-->
+<script src="/katra/assets/jquery.min.js"></script>
+<script src="/katra/assets/bootstrap.min.js"></script>
 
 <script src='/katra/js/prettify.js'></script>
 <script src='/katra/js/lang-basic.js'></script>
-<script src='/katra/js/rte.browser.js'></script>
-<script src='/katra/js/katra.js'></script>
-<script src='/katra/js/kc.js'></script>
-<script>
 
-(function() {
-    $(function() {
-
-        katra.setRoot("/katra/");
-
-        $('a[data-toggle="tab"]').live('click', function (e) {
-            if (/\#repl$/.test(e.target)) {
-                katra.focus();
-            }
-        });
-
-        {% if page.command != "" %}
-        katra.command.{{ page.command }}("{{ page.program }}", function(){
-            $('#katra-source').text(katra.getText());
-            prettyPrint();
-        });
-        {% endif %}
-
-
-    })
-}).call(this);
-</script>
 </body>
 </html>
