@@ -49,7 +49,7 @@
 
       Console.prototype.promptHistory = true;
 
-      Console.prototype.welcomeMessage = 'Katra BASIC';
+      Console.prototype.welcomeMessage = '';
 
       function Console(element, prompt) {
         this.element = element != null ? element : '.console';
