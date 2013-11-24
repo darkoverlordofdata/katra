@@ -653,17 +653,19 @@
       _con: {
         get: function() {
           if (__con == null) {
-            __con = new Console(_wel);
+            return __con = new Console(_wel);
+          } else {
+            return __con;
           }
-          return __con;
         }
       },
       _fs: {
         get: function() {
           if (__fs == null) {
-            __fs = new rte.FileSystem();
+            return __fs = new rte.FileSystem();
+          } else {
+            return __fs;
           }
-          return __fs;
         }
       }
     });
@@ -679,17 +681,10 @@
   }
 
   katra = {
-    setRoot: _fs.setRoot,
-    getText: function() {
-      return _txt;
-    },
-    start: function() {
-      return _con.reset();
-    },
-    welcome: function($str) {
-      return _wel = $str;
-    },
-    basic: function($args) {
+    main: function($args) {
+      var _ref;
+      _wel = (_ref = $args.title) != null ? _ref : _wel;
+      console.log("wel = |" + _wel + "|");
       switch ($args.basic) {
         case 'atari':
           return _exec(V_ATARI, $args.program);
@@ -698,11 +693,12 @@
         case 'hp2k':
           return _exec(V_HP2000, $args.program);
         default:
-          if (typeof $args === 'string') {
-            _wel = $args;
-          }
           return _con.reset();
       }
+    },
+    setRoot: _fs.setRoot,
+    getText: function() {
+      return _txt;
     },
     parse: _parse,
     command: {

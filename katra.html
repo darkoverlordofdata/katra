@@ -126,9 +126,10 @@ function parseQuery() {
             katra.setRoot("/katra/");
             args = parseQuery();
             if (Object.keys(args).length == 0) {
-                document.title = args = "Katra BASIC";
+                args = {title: "Katra BASIC"};
+                document.title = args.title;
             }
-            katra.basic(args);
+            katra.main(args);
 
         }
         setSize();
