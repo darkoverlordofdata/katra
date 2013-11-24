@@ -684,7 +684,6 @@
     main: function($args) {
       var _ref;
       _wel = (_ref = $args.title) != null ? _ref : _wel;
-      console.log("wel = |" + _wel + "|");
       switch ($args.basic) {
         case 'atari':
           return _exec(V_ATARI, $args.program);
@@ -696,7 +695,9 @@
           return _con.reset();
       }
     },
-    setRoot: _fs.setRoot,
+    setRoot: function($root) {
+      return _fs.setRoot($root);
+    },
     getText: function() {
       return _txt;
     },
