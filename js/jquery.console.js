@@ -105,8 +105,8 @@
 		var inner = $('<div class="jquery-console-inner"></div>');
 		// erjiang: changed this from a text input to a textarea so we
 		// can get pasted newlines
-	  	var typer = $('<textarea class="jquery-console-typer"></textarea>');
-//    var typer = $('<div contenteditable class="jquery-console-typer"></div>');
+//  	var typer = $('<textarea class="jquery-console-typer"></textarea>');
+    var typer = $('<div contenteditable class="jquery-console-typer"></div>');
 		// Prompt
 		var promptBox;
 		var prompt;
