@@ -83,7 +83,7 @@ window.rte = rte =
     # @param  [String]  line  the line that was entered
     # @return true if input is valid
     #
-    commandValidate: ($line) =>
+    commandValidate: ($line) ->
       if $line is "" then false else true
 
     #
@@ -105,19 +105,16 @@ window.rte = rte =
     # @param  [Boolean]  set  value to set pause
     # @return [Void]
     #
-    pause: ($set) =>
+    pause: ($set) ->
       return
 
-    reset: () =>
+    reset: () ->
       @console.sync()
 
-    focus: () =>
-      @console.typer.focus()
-
-    setPrompt: ($prompt) =>
+    setPrompt: ($prompt) ->
       @console.setPrompt $prompt
 
-    debug: ($text) =>
+    debug: ($text) ->
       $text = if $text? then String($text) else ''
       @console.inner.append _fix("#{$text}\n")
 

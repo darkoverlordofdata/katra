@@ -69,6 +69,11 @@ module.exports =
         process.stdout.write @altPrompt
 
 
+    reset: () ->
+      return
+    setPrompt: ($prompt) ->
+      return
+
     #
     # pause the input listener?
     #
@@ -108,8 +113,6 @@ module.exports =
       @vars = $vars
       true
 
-    reset: () ->
-      return
     #
     # debug/tron output
     #
