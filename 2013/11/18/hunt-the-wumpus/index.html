@@ -37,7 +37,7 @@
     <!--<link href="//cdn.darkoverlordofdata.com/css/bootstrap-responsive.css" rel="stylesheet">-->
     <link href="/katra/assets/bootstrap-responsive.css" rel="stylesheet">
     <link href="/katra/css/prettify.css" rel="stylesheet">
-    <link href="/katra/css/desert.css" rel="stylesheet">
+    <link href="/katra/css/desertz.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -100,8 +100,8 @@
 <div class="row-fluid">
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">Hunt the Wumpus</a></li>
-            <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
+            <li class="active"><a href="#katra-tab-content" data-toggle="tab">Hunt the Wumpus</a></li>
+            <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
         </ul>
 
         <div class="tab-content">
@@ -112,8 +112,9 @@
                 <a target="WUMPUS" href="/katra/katra.html?basic=atari&amp;program=WUMPUS">launch...</a>
             </div>
 
-            <div class="tab-pane" id="katra-tab-repl">
-                <iframe seamless src="/katra/katra.html?basic=atari&amp;program=WUMPUS"></iframe>
+            <div class="tab-pane" id="katra-tab-source">
+                <pre id='source' class="prettyprint lang-basic">
+                </pre>
             </div>
 
         </div>
@@ -130,11 +131,23 @@
 </div>
 <!--<script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>-->
 <!--<script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>-->
-<script src="/katra/assets/jquery.min.js"></script>
+<script src="/katra/assets/jquery-2.0.2.min.js"></script>
 <script src="/katra/assets/bootstrap.min.js"></script>
-
-<script src='/katra/js/prettify.js'></script>
-<script src='/katra/js/lang-basic.js'></script>
 
 </body>
 </html>
+<script src='/katra/js/prettify.js'></script>
+<script src='/katra/js/lang-basic.js'></script>
+
+<script>
+(function() {
+
+    $(function() {
+        $.get('/katra/bas/atari/WUMPUS.bas', function(data) {
+            $('#source').html(String(data))
+            prettyPrint();
+        });
+    });
+
+}).call(this);
+</script>

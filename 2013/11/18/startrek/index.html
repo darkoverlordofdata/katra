@@ -37,7 +37,7 @@
     <!--<link href="//cdn.darkoverlordofdata.com/css/bootstrap-responsive.css" rel="stylesheet">-->
     <link href="/katra/assets/bootstrap-responsive.css" rel="stylesheet">
     <link href="/katra/css/prettify.css" rel="stylesheet">
-    <link href="/katra/css/desert.css" rel="stylesheet">
+    <link href="/katra/css/desertz.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -100,22 +100,23 @@
 <div class="row-fluid">
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">StarTrek</a></li>
-            <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
+            <li class="active"><a href="#katra-tab-content" data-toggle="tab">StarTrek</a></li>
+            <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
         </ul>
 
         <div class="tab-content">
 
             <div class="tab-pane active" id="katra-tab-content">
-                Ah ~ memories of misspent youth, of afternoons in the Scottsdale Community
+                <p>Ah ~ memories of misspent youth, of afternoons in the Scottsdale Community
 College library, playing computer games on the teletype. Teletype? WTF?
-Well, it was 1975, and this was about as good as it got!
+Well, it was 1975, and this was about as good as it got!</p>
 
                 <a target="STTR1" href="/katra/katra.html?basic=hp2k&amp;program=STTR1">launch...</a>
             </div>
 
-            <div class="tab-pane" id="katra-tab-repl">
-                <iframe seamless src="/katra/katra.html?basic=hp2k&amp;program=STTR1"></iframe>
+            <div class="tab-pane" id="katra-tab-source">
+                <pre id='source' class="prettyprint lang-basic">
+                </pre>
             </div>
 
         </div>
@@ -132,11 +133,23 @@ Well, it was 1975, and this was about as good as it got!
 </div>
 <!--<script src="//cdn.darkoverlordofdata.com/js/jquery.min.js"></script>-->
 <!--<script src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js"></script>-->
-<script src="/katra/assets/jquery.min.js"></script>
+<script src="/katra/assets/jquery-2.0.2.min.js"></script>
 <script src="/katra/assets/bootstrap.min.js"></script>
-
-<script src='/katra/js/prettify.js'></script>
-<script src='/katra/js/lang-basic.js'></script>
 
 </body>
 </html>
+<script src='/katra/js/prettify.js'></script>
+<script src='/katra/js/lang-basic.js'></script>
+
+<script>
+(function() {
+
+    $(function() {
+        $.get('/katra/bas/hp2k/STTR1.bas', function(data) {
+            $('#source').html(String(data))
+            prettyPrint();
+        });
+    });
+
+}).call(this);
+</script>
