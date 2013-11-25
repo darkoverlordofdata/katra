@@ -44,6 +44,10 @@
         }
       };
 
+      Console.prototype.reset = function() {};
+
+      Console.prototype.setPrompt = function($prompt) {};
+
       Console.prototype.pause = function($set) {
         if (this.paused === $set) {
           return;
@@ -71,8 +75,6 @@
         this.vars = $vars;
         return true;
       };
-
-      Console.prototype.reset = function() {};
 
       Console.prototype.debug = function($text) {
         return process.stdout.write($text.blue + '\n');
