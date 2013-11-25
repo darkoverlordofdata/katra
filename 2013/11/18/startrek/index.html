@@ -102,6 +102,7 @@
         <ul class="nav nav-tabs" id="katra-menu">
             <li class="active"><a href="#katra-tab-content" data-toggle="tab">StarTrek</a></li>
             <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
+            <li><a href="#katra-tab-help" data-toggle="tab" title="View the help text">Help</a></li>
         </ul>
 
         <div class="tab-content">
@@ -116,6 +117,11 @@ Well, it was 1975, and this was about as good as it got!</p>
 
             <div class="tab-pane" id="katra-tab-source">
                 <pre id='source' class="prettyprint lang-basic">
+                </pre>
+            </div>
+
+            <div class="tab-pane" id="katra-tab-help">
+                <pre id='help'>
                 </pre>
             </div>
 
@@ -146,8 +152,11 @@ Well, it was 1975, and this was about as good as it got!</p>
 
     $(function() {
         $.get('/katra/bas/hp2k/STTR1.bas', function(data) {
-            $('#source').html(String(data))
+            $('#source').html(String(data));
             prettyPrint();
+        });
+        $.get('/katra/bas/hp2k/STTR1.txt', function(data) {
+            $('#help').html(String(data));
         });
     });
 
