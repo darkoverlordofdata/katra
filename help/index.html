@@ -13,7 +13,52 @@ active: help
 
     <div class="tab-pane active" id="katra-tab-general">
         <p>
-            Katra emulates a subset of HP 2000/Access BASIC.
+            Katra emulates a subset of three basic dialects:
+            HP 2000/Access BASIC, GWBasic, and Atari Basic.
+        </p><p>
+            For our purposes, there is little difference between
+            these three. The only difference that really matters is
+            string handling is different in GWBasic, using MID$, etc.
+        </p>
+        <p>Other differences don't overlap:</p>
+        <ul>
+            <li>You can use either braces or parens to access arrays,
+                so DIM Z(2) and DIM Z[2] work the same.</li>
+            <li>Use Cat[alog], Gro[up], or Lib[rary] to list HP user
+                group and system folders. Use GET-STTR1 to load from user,
+                GET-*TREK73 to load from group, and GET-$TRADER to load from
+                the system folder.</li>
+            <li>Use DIR to list the GWBasic root, and GWBASIC "path/to/file" to
+                load a program.</li>
+            <li>Use FILES to list the Atari root, and ATARI "path/to/file" to load
+                a program.</li>
+        </ul>
+        <p>Katra specific:</p>
+        <ul>
+            <li>Commands and keywords are not case sensitive, but variable names are.
+                So this code:
+                <pre>
+                10 LET X = 10
+                20 let x = 42
+                30 end
+                </pre>
+                will set two different
+                variables - 'X' and 'x' to 10 and 42 respectively.
+                ALL of the old prgrams are in upper case,
+                and expect upper case input. I think lower case was invented in the 90's.</li>
+            <li>Use TRON and TROFF to turn trace on and off. This prints each line to the
+                console as it executes.</li>
+            <li>Commands vs Keywords: Keywords work can be entered directly or on a line number.
+                Commands can only be entered directly. This means that commands cannot appear in
+                a program.</li>
+            <li>Use CTRL/C to abort a program. Use CTRL/R to restart.</li>
+            <li>When you see the '>' prompt, you are in REPL mode.</li>
+            <li>When you see the '?' prompt, a running program is waiting for input.</li>
+            <li>You can create new HP programs. They will be saved to local
+                storage in your browser.</li>
+
+        </ul>
+
         </p>
 
     </div>
@@ -62,7 +107,7 @@ active: help
             <dt>Scratch</dt>
             <dd>Erase current variables.</dd>
 
-            <dt>Trace &lt;On|Off&gt;</dt>
+            <dt>Tron | Troff</dt>
             <dd>Turn debug listing on or off.</dd>
         </dl>
     </div>
@@ -136,6 +181,25 @@ active: help
     </div>
 
     <div class="tab-pane" id="katra-tab-examples">
+        <p>Enter test to view the contents of the test folder. Enter
+        <code>get-#for</code> to load the test program.
+        Enter <code>list</code> to display the program.</p>
+        <p>Enter <code>run</code> to run the program, or enter
+        <code>exe-#data</code> to run another test program.</p>
+        <p>Enter <code>scr</code> to erase the program from memoery.
+        Enter <code>list</code> to see that it is gone.</p>
+        <p>Enter the following code:
+            <pre>
+        10 LET X = 42
+        20 PRINT "THE ANSWER IS";X
+        30 END
+            </pre>
+        Enter <code>name-test </code> and then <code>save</code>.
+        </p>
+        <p>After restarting the browser, enter <code>cat </code> and the
+        program 'test' will be included in the list. Enter <code>exe-test</code>
+        to load and run the saved code.</p>
+
     </div>
 
     <p><a href="/katra/">back</a></p>

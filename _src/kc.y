@@ -59,7 +59,6 @@
 */
 Program
     : Command NEWLINE EOF       -> new keyword.Statement($1)
-    /*| GET                        { return command.get($1); }*/
     | Lines EOF
     ;
 

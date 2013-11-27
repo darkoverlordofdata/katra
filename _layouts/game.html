@@ -3,24 +3,50 @@
 <div class="row-fluid">
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#content" data-target="#katra-tab-content" data-toggle="tab">{{ page.title }}</a></li>
-            <li><a href="#repl" data-target="#katra-tab-repl" data-toggle="tab" title="type run to start'">Execute</a></li>
+            <li class="active"><a href="#katra-tab-content" data-toggle="tab">{{ page.title }}</a></li>
+            <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
+            <li><a href="#katra-tab-help" data-toggle="tab" title="View the help text">Help</a></li>
         </ul>
 
         <div class="tab-content">
 
             <div class="tab-pane active" id="katra-tab-content">
                 {{ content }}
-                <a target="{{ page.program }}" href="/katra/katra.html?basic={{ page.basic }}&amp;program={{ page.program }}">launch...</a>
             </div>
 
-            <div class="tab-pane" id="katra-tab-repl">
-                <iframe seamless src="/katra/katra.html?basic={{ page.basic }}&amp;program={{ page.program }}"></iframe>
+            <div class="tab-pane" id="katra-tab-source">
+                <pre id='source' class="prettyprint lang-katra">
+                </pre>
+            </div>
+
+            <div class="tab-pane" id="katra-tab-help">
+                <pre id='help'>
+                </pre>
             </div>
 
         </div>
     </div>
 </div>
-<p><a href="/katra/">back</a></p>
+<p><a class="btn btn-primary" target="{{ page.program }}" href="/katra/katra.html?basic={{ page.basic }}&amp;program={{ page.program }}">
+    <i class="icon-play-circle icon-white"></i> launch...</a>
+<a class="btn" href="/katra/">back</a></p>
 
 {% include footer.html %}
+<script src='/katra/js/prettify.js'></script>
+<script src='/katra/js/lang-katra.js'></script>
+
+<script>
+(function() {
+
+    $(function() {
+        $.get('/katra/{{page.source}}', function(data) {
+            $('#source').html(String(data));
+            prettyPrint();
+        });
+        $.get('/katra/{{page.help}}', function(data) {
+            $('#help').html(String(data));
+        });
+    });
+
+}).call(this);
+</script>

@@ -3,7 +3,8 @@
 ## Basic interpreter/compiler
 
 
-A basic language interpreter written in coffee-script.
+A basic language interpreter written in coffee-script,
+Katra was written to run classic games from the golden age of basic programming.
 
                     ------*------
     -------------   `---  ------'
@@ -11,8 +12,9 @@ A basic language interpreter written in coffee-script.
              \\\\-------  --
              '-----------'
 
+Katra runs in the browser or on the command line. See katra.html for browser example.
+Command line install instructions below.
 
-Katra has one goal - to run StarTrek.bas games from the golden age of basic programming.
 
 ## Status
 This project is pre-alpha.
