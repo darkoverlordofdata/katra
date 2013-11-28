@@ -32,8 +32,10 @@
 <a class="btn" href="/katra/">back</a></p>
 
 {% include footer.html %}
-<script src='/katra/js/prettify.js'></script>
-<script src='/katra/js/lang-katra.js'></script>
+{% bundle %}
+- /_assets/prettify.js
+- /_assets/lang-katra.js
+{% endbundle %}
 
 <script>
 (function() {
