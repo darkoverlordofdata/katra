@@ -4,7 +4,7 @@
 
 One basic to run them? Katra is a basic language interpreter in coffee-script,
 written to run classic games from the golden age of basic programming. Games
-like [StarTrek] (http://darkoverlordofdata.com/katra/run/?basic=hp2k&program=STTR1)...
+like [STAR TREK] (http://darkoverlordofdata.com/katra/run/?basic=hp2k&program=STTR1)...
 
                     ------*------
     -------------   `---  ------'
