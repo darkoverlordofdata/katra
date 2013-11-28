@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Name=Katra - [SRTRK]
+Exec=/opt/google/chrome/google-chrome "--app=http://localhost:53610/katra/katra.html?basic=atari&program=STRTRK"
+Icon=chrome-http___localhost_53610_katra_katra.html_basic=atari&program=SRTRK
+StartupWMClass=localhost__katra_katra.html
+Name[en_US]=StarTrek

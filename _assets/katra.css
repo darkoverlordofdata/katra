@@ -57,6 +57,10 @@ div.console span.jquery-console-prompt-label {
 div.katra-logger-panel {
     font-weight:bold
 }
+.katra-source {
+    height:400px;
+    overflow:auto;
+}
 
 @-webkit-keyframes cursor {
     0% {opacity: 0;}

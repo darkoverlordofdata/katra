@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Name=Katra - [romulan]
+Exec=/opt/google/chrome/google-chrome "--app=http://localhost:53610/katra/katra.html?basic=gwbasic&program=romulan"
+Icon=chrome-http___localhost_53610_katra_katra.html_basic=gwbasic&program=romulan
+StartupWMClass=localhost__katra_katra.html
+Name[en_US]=Romulan

@@ -21,3 +21,15 @@ jekyll_sort:
     by: some_date
     direction: up
     dest: posts_asc
+
+asset_bundler:
+  compress:
+    js: false
+    css: false
+  base_path: /katra/assets/
+  server_url:
+  remove_bundled: false
+  dev: false
+  markup_templates:
+    js: "<script type='text/javascript' src='{{url}}'></script>\n"
+    css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"
