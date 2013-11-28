@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=575, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href='/assets/fonts.css' rel='stylesheet' type='text/css'>
-    <link href="/assets/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/favicon.png" rel="shortcut icon" type="image/png">
+
+    {% bundle %}
+    - /_assets/fonts.css
+    - /_assets/bootstrap.min.css
+    - /_assets/katra.css
+    - /_assets/favicon.png
+    {% endbundle %}
     <style>
         html, body {
             padding: 0;
@@ -18,17 +22,18 @@
             overflow: hidden;
         }
     </style>
-    <link href='/katra/css/katra.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div class="console">
 </div>
+{% bundle %}
+- /_assets/jquery-1.4.2.min.js
+- /_assets/jquery.console.js
+- /_assets/rte.browser.js
+- /_assets/katra.js
+- /_assets/kc.js
+{% endbundle %}
 
-<script src="/assets/jquery-1.4.2.min.js"></script>
-<script src='/katra/js/jquery.console.js'></script>
-<script src='/katra/js/rte.browser.js'></script>
-<script src='/katra/js/katra.js'></script>
-<script src='/katra/js/kc.js'></script>
 <script>
 $(function() {
 
