@@ -382,6 +382,7 @@ END
     def markup()
       return dev_markup() if @config['dev']
 
+      #if base == '/katra/assets/' then base = '/assets/'
       @config['markup_templates'][@type].render(
         'url' => "#{@config['server_url']}#{@base}#{@filename}"
       )
@@ -402,7 +403,11 @@ END
     #   This is where we give Jekyll::Bundle a Jekyll::StaticFile
     #   duck call and send it on its way.
     def destination(dest)
-      File.join(dest, @base, @filename)
+      if @base == '/katra/assets/'
+      	File.join(dest, '/assets/', @filename)
+      else
+      	File.join(dest, @base, @filename)
+      end
     end
 
     def write(dest)

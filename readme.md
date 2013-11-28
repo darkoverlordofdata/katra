@@ -1,10 +1,10 @@
-# katra
+# Katra
 
-## Basic interpreter/compiler
+## Basic interpreter
 
-
-A basic language interpreter written in coffee-script,
-Katra was written to run classic games from the golden age of basic programming.
+One basic to run them? Katra is a basic language interpreter in coffee-script,
+written to run classic games from the golden age of basic programming. Games
+like [StarTrek] (http://darkoverlordofdata.com/katra/run/?basic=hp2k&program=STTR1)...
 
                     ------*------
     -------------   `---  ------'
@@ -12,12 +12,20 @@ Katra was written to run classic games from the golden age of basic programming.
              \\\\-------  --
              '-----------'
 
-Katra runs in the browser or on the command line. See katra.html for browser example.
+Katra runs in the browser or on the command line.
+See ./www/run/index.html for a browser example.
 Command line install instructions below.
 
 
 ## Status
-This project is pre-alpha.
+This project is alpha.
+
+Todo:
+
+* Append - command
+* Chain - keyword
+
+
 
 ## Install
 
