@@ -29,51 +29,9 @@
 </div>
 
     <script type="text/javascript" src="//cdn.darkoverlordofdata.com/js/jquery-1.4.2.min.js" ></script>
-    <script type='text/javascript' src='/katra/assets/1961fff92f3df57ec28a6058b95f51a8.js'></script>
+    <script type='text/javascript' src='/katra/assets/0fc4b5e43f2b4208d3c9080a9f61d042.js'></script>
 
 
 
-<script>
-$(function() {
-
-    var args, // query args
-        /* parse the query args */
-        parseQuery = function() {
-            var result = {};
-            pairs = window.location.search.substring(1).split('&');
-            for (i in pairs) {
-                if (pairs[i].length > 0) {
-                    pair = pairs[i].split('=')
-                    result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1])
-                }
-            }
-            return result;
-        },
-        /* resize the console to match the window */
-        setSize = function() {
-            $("div.console div.jquery-console-inner").offset({top: 0, left: 0});
-            $("div.console div.jquery-console-inner").width($(this).width()-12);
-            $("div.console div.jquery-console-inner").height($(this).height()-12);
-        };
-    /* wait until you're done to trigger the end event */
-    $(window).resize(function() {
-        if(this.resizeTO) clearTimeout(this.resizeTO);
-        this.resizeTO = setTimeout(function() {
-            $(this).trigger('resizeEnd');
-        }, 500);
-    });
-    /* bind the end event */
-    $(window).bind('resizeEnd', setSize);
-    /* load & run the basic program */
-    katra.setRoot("/katra/");
-    args = parseQuery();
-    if (Object.keys(args).length == 0) {
-        args = {title: "Katra BASIC"};
-        document.title = args.title;
-    }
-    katra.main(args);
-    setSize();
-});
-</script>
 </body>
 </html>
