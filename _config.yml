@@ -1,12 +1,13 @@
 name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 
-
-source: ./www
+isdev: false
+source: ./public
 destination: ./katra
 
 port: 53610
 url: http://darkoverlordofdata.com/katra
+gh_pages: true
 baseurl: /katra/
 paginate: 5
 paginate_path: "list/page:num"
@@ -24,12 +25,12 @@ jekyll_sort:
 
 asset_bundler:
   compress:
-    js: false
-    css: false
+    js: yui
+    css: yui
   base_path: /katra/assets/
   server_url:
   remove_bundled: false
   dev: false
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
-    css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"
+    css: "<link rel='stylesheet' href='{{url}}' type='text/css' />\n"

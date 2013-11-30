@@ -27,17 +27,14 @@ task 'build:parser', 'Build the parser using BNF source', ->
   #
   # Build the AST lib
   #
-  exec 'coffee -o www/_assets -c src/lang-katra.coffee', ($err, $stdout, $stderr) ->
+  exec 'coffee -o public/_assets -c src/run-katra.coffee', ($err, $stdout, $stderr) ->
 
     util.log $err if $err if $err?
     util.log $stderr if $stderr if $stderr?
     util.log $stdout if $stdout if $stdout?
     util.log 'ok' unless $stdout?
 
-    #
-    # Build the runtime support lib
-    #
-    exec 'coffee -o www/_assets -c src/rte.node.coffee', ($err, $stdout, $stderr) ->
+    exec 'coffee -o public/_assets -c src/lang-katra.coffee', ($err, $stdout, $stderr) ->
 
       util.log $err if $err if $err?
       util.log $stderr if $stderr if $stderr?
@@ -47,7 +44,7 @@ task 'build:parser', 'Build the parser using BNF source', ->
       #
       # Build the runtime support lib
       #
-      exec 'coffee -o www/_assets -c src/rte.node.coffee', ($err, $stdout, $stderr) ->
+      exec 'coffee -o public/_assets -c src/rte.node.coffee', ($err, $stdout, $stderr) ->
 
         util.log $err if $err if $err?
         util.log $stderr if $stderr if $stderr?
@@ -57,7 +54,7 @@ task 'build:parser', 'Build the parser using BNF source', ->
         #
         # Build the runtime support lib
         #
-        exec 'coffee -o www/_assets -c src/rte.browser.coffee', ($err, $stdout, $stderr) ->
+        exec 'coffee -o public/_assets -c src/rte.node.coffee', ($err, $stdout, $stderr) ->
 
           util.log $err if $err if $err?
           util.log $stderr if $stderr if $stderr?
@@ -65,13 +62,23 @@ task 'build:parser', 'Build the parser using BNF source', ->
           util.log 'ok' unless $stdout?
 
           #
-          # Generate the parser
+          # Build the runtime support lib
           #
-          exec 'jison src/kc.y src/kc.l --outfile www/_assets/kc.js', ($err, $stdout, $stderr) ->
+          exec 'coffee -o public/_assets -c src/rte.browser.coffee', ($err, $stdout, $stderr) ->
 
             util.log $err if $err if $err?
             util.log $stderr if $stderr if $stderr?
             util.log $stdout if $stdout if $stdout?
             util.log 'ok' unless $stdout?
+
+            #
+            # Generate the parser
+            #
+            exec 'jison src/kc.y src/kc.l --outfile public/_assets/kc.js', ($err, $stdout, $stderr) ->
+
+              util.log $err if $err if $err?
+              util.log $stderr if $stderr if $stderr?
+              util.log $stdout if $stdout if $stdout?
+              util.log 'ok' unless $stdout?
 
 

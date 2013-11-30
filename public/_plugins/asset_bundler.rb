@@ -299,7 +299,6 @@ END
 
     def compress()
       return if @config['dev']
-
       case @config['compress'][@type]
         when 'yui'
           compress_yui()
@@ -403,9 +402,26 @@ END
     #   This is where we give Jekyll::Bundle a Jekyll::StaticFile
     #   duck call and send it on its way.
     def destination(dest)
-      if @base == '/katra/assets/'
-      	File.join(dest, '/assets/', @filename)
-      else
+
+
+      ###########################################
+      #  gh-pages - d16a				
+      ###########################################
+      #
+      # => Github project pages expect assets
+      # => to be in a subfolder of the base path.
+      # => So if the config base_path starts with
+      # => the project baseurl, strip it off because
+      # => it will be tacked back on when served.
+      #
+      if Jekyll.configuration({})['gh_pages']
+	      baseurl = Jekyll.configuration({})['baseurl']
+	      project_base = @base
+	      if project_base.start_with?(baseurl)
+	      	project_base = project_base[baseurl.length-1, project_base.length]
+	      end
+	      File.join(dest, project_base, @filename)
+	  else
       	File.join(dest, @base, @filename)
       end
     end

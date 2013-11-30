@@ -7,15 +7,25 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    {% bundle %}
-    - /_assets/fonts.css
-    - /_assets/bootstrap.min.css
-    - /_assets/site.css
-    - /_assets/katra.css
-    - /_assets/bootstrap-responsive.css
-    - /_assets/prettify.css
-    {% endbundle %}
-
+    {% if site.isdev == true %}
+        {% bundle %}
+        - /_assets/fonts.css
+        - /_assets/bootstrap.min.css
+        - /_assets/site.css
+        - /_assets/katra.css
+        - /_assets/prettify.css
+        - /_assets/bootstrap-responsive.css
+        {% endbundle %}
+    {% else %}
+        <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap.min.css' type='text/css'/>
+        {% bundle %}
+        - /_assets/fonts.css
+        - /_assets/site.css
+        - /_assets/katra.css
+        - /_assets/prettify.css
+        {% endbundle %}
+        <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.min.css' type='text/css'/>
+    {% endif %}
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -55,25 +65,21 @@
         <p>BASIC language interpreter in CoffeeScript</p>
     </div>
     <ul class="nav nav-pills">
-
         {% if page.active == "home" %}
         <li class="active"><a href="/katra/">Home</a></li>
         {% else %}
         <li><a href="/katra/">Home</a></li>
         {% endif %}
-
         {% if page.active == "about" %}
         <li class="active"><a href="/katra/about">About</a></li>
         {% else %}
         <li><a href="/katra/about">About</a></li>
         {% endif %}
-
         {% if page.active == "help" %}
         <li class="active"><a href="/katra/help">Help</a></li>
         {% else %}
         <li><a href="/katra/help">Help</a></li>
         {% endif %}
-
     </ul>
 </div>
 
