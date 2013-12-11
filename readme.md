@@ -30,9 +30,7 @@ Todo:
 ## Install
 
 ```bash
-$ cd Git
-$ git clone https://github.com/darkoverlordofdata/katra
-$ sudo npm install -g ~/Git/katra
+$ sudo npm install -g katra
 ```
 
 This will create the /usr/bin/katra command

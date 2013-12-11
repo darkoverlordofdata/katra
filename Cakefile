@@ -22,12 +22,12 @@ util = require 'util'
 # Build from a context free grammar (BNF)
 #
 #
-task 'build:parser', 'Build the parser using BNF source', ->
+task 'build', 'Build the parser using BNF source', ->
 
   #
   # Build the AST lib
   #
-  exec 'coffee -o public/_assets -c src', ($err, $stdout, $stderr) ->
+  exec 'coffee -o lib -c src', ($err, $stdout, $stderr) ->
 
     util.log $err if $err if $err?
     util.log $stderr if $stderr if $stderr?
@@ -38,7 +38,7 @@ task 'build:parser', 'Build the parser using BNF source', ->
     #
     # Generate the parser
     #
-    exec 'jison src/kc.y src/kc.l --outfile public/_assets/kc.js', ($err, $stdout, $stderr) ->
+    exec 'jison src/kc.y src/kc.l --outfile lib/kc.js', ($err, $stdout, $stderr) ->
 
       util.log $err if $err if $err?
       util.log $stderr if $stderr if $stderr?

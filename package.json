@@ -18,8 +18,6 @@
     "colors": "~0.6.2"
   },
   "scripts": {
-    "start": "coffee ./index.coffee",
-    "test": "cake test"
   },
   "bin": {
     "katra": "./bin/katra"

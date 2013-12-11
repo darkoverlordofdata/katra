@@ -165,7 +165,7 @@ module.exports =
 
     fs = require('fs')
     path = require('path')
-    $root = __dirname[0..__dirname.lastIndexOf('/')]
+    $root = process.cwd() #__dirname[0..__dirname.lastIndexOf('/')]
 
     setRoot: ($path) ->
       $root = $path
@@ -215,7 +215,7 @@ module.exports =
     #
     readDir: ($dir, $next) ->
 
-      fs.readdir $root+_data[$dir], ($err, $files) ->
+      fs.readdir path.join($root, _data[$dir]), ($err, $files) ->
         if $err? then $next []
         else $next ($name for $name in $files when /.*\.bas$/.test $name)
 
