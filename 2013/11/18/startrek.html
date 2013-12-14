@@ -9,7 +9,7 @@
 
     
         <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap.min.css' type='text/css'/>
-        <link rel='stylesheet' href='/katra/assets/e4b634d0d5d16562141cd45c959cdb22.css' type='text/css' />
+        <link rel='stylesheet' type='text/css' href='/katra/assets/4058d88d23417fcc99c2830f5ae3c418.css' />
 
         <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.min.css' type='text/css'/>
     
@@ -70,7 +70,7 @@
 <div class="row-fluid">
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#katra-tab-content" data-toggle="tab">Hunt the Wumpus</a></li>
+            <li class="active"><a href="#katra-tab-content" data-toggle="tab">StarTrek</a></li>
             <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
             <li><a href="#katra-tab-help" data-toggle="tab" title="View the help text">Help</a></li>
         </ul>
@@ -78,8 +78,10 @@
         <div class="tab-content">
 
             <div class="tab-pane active" id="katra-tab-content">
-                <p>Hunt the Wumpus</p>
-<p>Written by Gregory Yob, from the Atari Archives.</p>
+                <p>Ah ~ memories of misspent youth, of afternoons in the Scottsdale Community
+College library, playing computer games on the teletype. Teletype? WTF?
+Well, it was 1975, and this was about as good as it got!</p>
+
             </div>
 
             <div class="tab-pane" id="katra-tab-source">
@@ -95,7 +97,7 @@
         </div>
     </div>
 </div>
-<p><a class="btn btn-primary" target="WUMPUS" href="/katra/run/?basic=atari&amp;program=WUMPUS">
+<p><a class="btn btn-primary" target="STTR1" href="/katra/run/?basic=hp2k&amp;program=STTR1">
     <i class="icon-play-circle icon-white"></i> launch...</a>
 <a class="btn" href="/katra/">back</a></p>
 
@@ -117,21 +119,17 @@
 
 </body>
 </html>
-<script type='text/javascript' src='/katra/assets/f2cadc9a67a6767843a79bccf2b3be60.js'></script>
+<script type='text/javascript' src='/katra/assets/2a3f0b04f7607b72c6b793537cf80ed1.js'></script>
 
 
 <script>
-(function() {
-
-    $(function() {
-        $.get('/katra/bas/atari/WUMPUS.bas', function(data) {
-            $('#source').html(String(data));
-            prettyPrint();
-        });
-        $.get('/katra/bas/atari/WUMPUS.txt', function(data) {
-            $('#help').html(String(data));
-        });
+$(function() {
+    $.get('/katra/bas/hp2k/STTR1.bas', function(data) {
+        $('#source').html(String(data));
+        prettyPrint();
     });
-
-}).call(this);
+    $.get('/katra/bas/hp2k/STTR1.txt', function(data) {
+        $('#help').html(String(data));
+    });
+});
 </script>

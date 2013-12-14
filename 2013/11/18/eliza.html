@@ -9,7 +9,7 @@
 
     
         <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap.min.css' type='text/css'/>
-        <link rel='stylesheet' href='/katra/assets/e4b634d0d5d16562141cd45c959cdb22.css' type='text/css' />
+        <link rel='stylesheet' type='text/css' href='/katra/assets/4058d88d23417fcc99c2830f5ae3c418.css' />
 
         <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.min.css' type='text/css'/>
     
@@ -70,7 +70,7 @@
 <div class="row-fluid">
     <div class="span12">
         <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#katra-tab-content" data-toggle="tab">Oregon City</a></li>
+            <li class="active"><a href="#katra-tab-content" data-toggle="tab">Eliza</a></li>
             <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
             <li><a href="#katra-tab-help" data-toggle="tab" title="View the help text">Help</a></li>
         </ul>
@@ -78,11 +78,8 @@
         <div class="tab-content">
 
             <div class="tab-pane active" id="katra-tab-content">
-                <p>This program simulates a trip over the Oregon trail from
-Independence, Missouri to Oregon City, Oregon in 1847.
-Your family of five will cover the 2000 mile Oregon trail
-in 5-6 months --- if you make it alive...</p>
-
+                <p>Eliza is always frustrating to talk with. I don't think that she listens.</p>
+<p>This is a GW-Basic version.</p>
             </div>
 
             <div class="tab-pane" id="katra-tab-source">
@@ -98,7 +95,7 @@ in 5-6 months --- if you make it alive...</p>
         </div>
     </div>
 </div>
-<p><a class="btn btn-primary" target="OREGON" href="/katra/run/?basic=hp2k&amp;program=OREGON">
+<p><a class="btn btn-primary" target="eliza" href="/katra/run/?basic=gwbasic&amp;program=eliza">
     <i class="icon-play-circle icon-white"></i> launch...</a>
 <a class="btn" href="/katra/">back</a></p>
 
@@ -120,21 +117,17 @@ in 5-6 months --- if you make it alive...</p>
 
 </body>
 </html>
-<script type='text/javascript' src='/katra/assets/f2cadc9a67a6767843a79bccf2b3be60.js'></script>
+<script type='text/javascript' src='/katra/assets/2a3f0b04f7607b72c6b793537cf80ed1.js'></script>
 
 
 <script>
-(function() {
-
-    $(function() {
-        $.get('/katra/bas/hp2k/OREGON.bas', function(data) {
-            $('#source').html(String(data));
-            prettyPrint();
-        });
-        $.get('/katra/bas/hp2k/OREGON.txt', function(data) {
-            $('#help').html(String(data));
-        });
+$(function() {
+    $.get('/katra/bas/gwbasic/eliza.bas', function(data) {
+        $('#source').html(String(data));
+        prettyPrint();
     });
-
-}).call(this);
+    $.get('/katra/', function(data) {
+        $('#help').html(String(data));
+    });
+});
 </script>
