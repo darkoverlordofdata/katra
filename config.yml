@@ -1,0 +1,43 @@
+#+--------------------------------------------------------------------+
+#| config.yml
+#+--------------------------------------------------------------------+
+#| Copyright DarkOverlordOfData (c) 2013
+#+--------------------------------------------------------------------+
+#|
+#| This file is a part of Huginn
+#|
+#| Huginn is free software; you can copy, modify, and distribute
+#| it under the terms of the MIT License
+#|
+#+--------------------------------------------------------------------+
+#
+# Production configuration
+#
+name: "dark overlord of data"
+description: "if it's not dark, it's not data"
+url: http://darkoverlordofdata.com/katra
+
+source: ./source
+destination: ../gh-pages
+
+plugins:
+  - huginn-asset-bundler
+
+asset_bundler:
+  compress:
+    js: true
+    css: true
+  base_path: /assets/
+  shim: /katra
+  server_url: //cdn.darkoverlordofdata.com/
+  remove_bundled: false
+  dev: false
+  markup_templates:
+    js: "<script type='text/javascript' src='{{url}}'></script>\n"
+    css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"
+
+sort:
+  src: posts
+  by: date
+  direction: asc
+  dest: posts_asc

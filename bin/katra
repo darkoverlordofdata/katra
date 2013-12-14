@@ -15,5 +15,5 @@
 # katra repl
 #
 
-katra   = require("../www/_assets/katra")
+katra   = require("../public/_assets/katra")
 katra.main title: 'Katra BASIC'

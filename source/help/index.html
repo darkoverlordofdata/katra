@@ -1,0 +1,208 @@
+---
+layout: default
+active: help
+---
+<ul class="nav nav-tabs" id="katra-menu">
+    <li class="active"><a data-target="#katra-tab-general" data-toggle="tab">General</a></li>
+    <li><a data-target="#katra-tab-commands" data-toggle="tab">Commands</a></li>
+    <li><a data-target="#katra-tab-keywords" data-toggle="tab">Keywords</a></li>
+    <li><a data-target="#katra-tab-examples" data-toggle="tab">Examples</a></li>
+</ul>
+
+<div class="tab-content">
+
+    <div class="tab-pane active" id="katra-tab-general">
+        <p>
+            Katra emulates a subset of three basic dialects:
+            HP 2000/Access BASIC, GWBasic, and Atari Basic.
+        </p><p>
+            For our purposes, there is little difference between
+            these three with the exception of string handling in
+            GWBasic, which uses MID$, LEFT, RIGHT$, etc.
+        </p>
+        <p>Other differences don't overlap:</p>
+        <ul>
+            <li>You can use either braces or parens to access arrays,
+                so DIM Z(2) and DIM Z[2] work the same.</li>
+            <li>Use Cat[alog], Gro[up], or Lib[rary] to list HP user
+                group and system folders. Use GET-STTR1 to load from user,
+                GET-*TREK73 to load from group, and GET-$TRADER to load from
+                the system folder.</li>
+            <li>Use DIR to list the GWBasic root, and GWBASIC "path/to/file" to
+                load a program.</li>
+            <li>Use FILES to list the Atari root, and ATARI "path/to/file" to load
+                a program.</li>
+        </ul>
+        <p>Katra specific:</p>
+        <ul>
+            <li>Commands and keywords are not case sensitive, but variable names are.
+                So this code:
+                <pre>
+                10 LET X = 10
+                20 let x = 42
+                30 end
+                </pre>
+                will set two different
+                variables - 'X' and 'x' to 10 and 42 respectively.
+                ALL of the old prgrams are in upper case,
+                and expect upper case input. I think lower case was invented in the 90's.</li>
+            <li>Use TRON and TROFF to turn trace on and off. This prints each line to the
+                console as it executes.</li>
+            <li>Commands vs Keywords: Keywords work can be entered directly or on a line number.
+                Commands can only be entered directly. This means that commands cannot appear in
+                a program.</li>
+            <li>Use CTRL/C to abort a program. Use CTRL/R to restart.</li>
+            <li>When you see the '>' prompt, you are in REPL mode.</li>
+            <li>When you see the '?' prompt, a running program is waiting for input.</li>
+            <li>You can create new HP programs. They will be saved to local
+                storage in your browser.</li>
+
+        </ul>
+
+        </p>
+
+    </div>
+
+    <div class="tab-pane" id="katra-tab-commands">
+        <dl>
+            <dt>Append-filename</dt>
+            <dd>Merge basic file into workspace.</dd>
+
+            <dt>Atari "filename"</dt>
+            <dd>Loads an atari basic game.</dd>
+
+            <dt>Catalog</dt>
+            <dd>List user programs.</dd>
+
+            <dt>Del [-from] [, to]</dt>
+            <dd>Delete program line number(s).</dd>
+
+            <dt>Execute-filename</dt>
+            <dd>Loads filename and executes.</dd>
+
+            <dt>Get-filename</dt>
+            <dd>Loads a program from storage.</dd>
+
+            <dt>Group</dt>
+            <dd>List group programs.</dd>
+
+            <dt>Gwbasic "filename"</dt>
+            <dd>Loads an gw basic game.</dd>
+
+            <dt>Library</dt>
+            <dd>List system programs.</dd>
+
+            <dt>List [-from] [, to]</dt>
+            <dd>To list the program, from and to line numbers.</dd>
+
+            <dt>Purge-filename</dt>
+            <dd>Delete program file.</dd>
+
+            <dt>Run</dt>
+            <dd>Runs the currently loaded progam.</dd>
+
+            <dt>Save</dt>
+            <dd>Saves current program.</dd>
+
+            <dt>Scratch</dt>
+            <dd>Erase current variables.</dd>
+
+            <dt>Tron | Troff</dt>
+            <dd>Turn debug listing on or off.</dd>
+        </dl>
+    </div>
+
+    <div class="tab-pane" id="katra-tab-keywords">
+        <dl>
+            <dt>Base(n)</dt>
+            <dd>Sets the low bound array indice - default 0.</dd>
+
+            <dt>Cls</dt>
+            <dd>Erases the console area.</dd>
+
+            <dt>Data n, 'string', ...</dt>
+            <dd>List data constants.</dd>
+
+            <dt>Def FN&lt;a&gt;(x) = expression</dt>
+            <dd>Define a function.</dd>
+
+            <dt>End</dt>
+            <dd>Ends the program execution.</dd>
+
+            <dt>For &lt;var&gt; = &lt;expression&gt; To &lt;expression&gt; [Step &lt;expression&gt;]</dt>
+            <dd>Head of a For/Next loop.</dd>
+
+            <dt>Goto &lt;line no&gt;</dt>
+            <dd>Jump to the line number.</dd>
+
+            <dt>Gosub &lt;line no&gt;</dt>
+            <dd>Jump to subroutine at line number.</dd>
+
+            <dt>If &lt;condition&gt; Then line no</dt>
+            <dd>If the expression is true, jump to the line number.</dd>
+
+            <dt>Image var [,var...]</dt>
+            <dd>List of variables to print.</dd>
+
+            <dt>Input var [,var...]</dt>
+            <dd>Input a List of variables.</dd>
+
+            <dt>[Let] var = [var = ] expression</dt>
+            <dd>Set variable to expression.</dd>
+
+            <dt>Mat var = &lt;Con|Zer&gt;</dt>
+            <dd>Initialize array values.</dd>
+
+            <dt>Next var</dt>
+            <dd>Footer of for next loop. Increments var by step.</dd>
+
+            <dt>Print expression [; expression ;]</dt>
+            <dd>Print list of expressions.</dd>
+
+            <dt>Purge</dt>
+            <dd>Removes the current program from memory.</dd>
+
+            <dt>Read var [, var ...]</dt>
+            <dd>Read variables from Data.</dd>
+
+            <dt>Restore</dt>
+            <dd>Reset Data to beginning.</dd>
+
+            <dt>Return</dt>
+            <dd>Return from a subroutine.</dd>
+
+            <dt>Rem text...</dt>
+            <dd>Comments.</dd>
+
+            <dt>Stop</dt>
+            <dd>Stops execution.</dd>
+
+        </dl>
+    </div>
+
+    <div class="tab-pane" id="katra-tab-examples">
+        <p>Enter <code>test</code> to view the contents of the test folder. Enter
+        <code>get-#for</code> to load the test program.
+        Enter <code>list</code> to display the program.</p>
+        <p>Enter <code>run</code> to run the program, or enter
+        <code>exe-#data</code> to run another test program.</p>
+        <p>Enter <code>scr</code> to erase the program from <memo></memo>ry.
+        Enter <code>list</code> to see that it is gone.</p>
+        <p>Enter the following code:
+            <pre>
+        10 LET X = 42
+        20 PRINT "THE ANSWER IS";X
+        30 END
+            </pre>
+        Enter <code>name-test </code> and then <code>save</code>.
+        </p>
+        <p>After restarting the browser, enter <code>cat </code> and the
+        program 'test' will be included in the list. Enter <code>exe-test</code>
+        to load and run the saved code.</p>
+
+    </div>
+
+    <p><a href="/katra/">back</a></p>
+
+</div>
+
