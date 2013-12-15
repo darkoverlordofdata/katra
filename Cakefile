@@ -19,15 +19,15 @@ util = require 'util'
 
 
 #
-# Build from a context free grammar (BNF)
+# Build Source
 #
 #
-task 'build:parser', 'Build the parser using BNF source', ->
+task 'build:src', 'Build the coffee source', ->
 
   #
   # Build the AST lib
   #
-  exec 'coffee -o public/_assets -c src', ($err, $stdout, $stderr) ->
+  exec 'coffee -o source/_assets -c src', ($err, $stdout, $stderr) ->
 
     util.log $err if $err if $err?
     util.log $stderr if $stderr if $stderr?
@@ -35,14 +35,16 @@ task 'build:parser', 'Build the parser using BNF source', ->
     util.log 'ok' unless $stdout?
 
 
-    #
-    # Generate the parser
-    #
-    exec 'jison src/kc.y src/kc.l --outfile public/_assets/kc.js', ($err, $stdout, $stderr) ->
+task 'build:parser', 'Build the parser using BNF source', ->
 
-      util.log $err if $err if $err?
-      util.log $stderr if $stderr if $stderr?
-      util.log $stdout if $stdout if $stdout?
-      util.log 'ok' unless $stdout?
+  #
+  # Generate the parser
+  #
+  exec 'jison src/kc.y src/kc.l --outfile public/_assets/kc.js', ($err, $stdout, $stderr) ->
+
+    util.log $err if $err if $err?
+    util.log $stderr if $stderr if $stderr?
+    util.log $stdout if $stdout if $stdout?
+    util.log 'ok' unless $stdout?
 
 

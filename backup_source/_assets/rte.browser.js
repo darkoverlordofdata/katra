@@ -84,31 +84,43 @@
 
       Console.prototype.pause = function($set) {};
 
-      Console.prototype.reset = function() {};
+      Console.prototype.reset = function() {
+        return this.console.sync();
+      };
 
       Console.prototype.setPrompt = function($prompt) {
         return this.console.setPrompt($prompt);
       };
 
       Console.prototype.debug = function($text) {
-        return this.console.debug($text);
+        $text = $text != null ? String($text) : '';
+        return this.console.inner.append(_fix("" + $text + "\n"));
       };
 
       Console.prototype.hilite = function($text) {
-        return this.console.hilite($text);
+        $text = $text != null ? String($text) : '';
+        return this.console.inner.append(_fix("" + $text + "\n"));
       };
 
       Console.prototype.print = function($text) {
-        return this.console.print($text);
+        $text = $text != null ? String($text) : '';
+        return this.console.inner.append(_fix($text));
       };
 
       Console.prototype.println = function($text) {
-        return this.console.println($text);
+        $text = $text != null ? String($text) : '';
+        return this.console.inner.append(_fix("" + $text + "\n"));
       };
 
       Console.prototype.clear = function() {
+        $(this.element).html('');
         this.console = $(this.element).console(this);
-        return this.console.clear();
+        this.console.inner.offset({
+          top: 0,
+          left: 0
+        });
+        this.console.inner.width($(document).width() - 12);
+        return this.console.inner.height($(document).height() - 12);
       };
 
       return Console;

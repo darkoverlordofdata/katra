@@ -19,7 +19,7 @@ name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 url: http://localhost/
 port: 0xd16a
-isdev: false
+isdev: true
 
 
 source: ./source
@@ -39,7 +39,7 @@ asset_bundler:
   shim: /katra
   server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
-  dev: false
+  dev: true
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
     css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"

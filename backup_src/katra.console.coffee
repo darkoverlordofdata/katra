@@ -48,11 +48,11 @@ do ($ = jQuery, window, document) ->
     KEY_R       = 82    # 'R'
     KEY_S       = 83    # 'S'
 
-    fix = ($text) -> $text.replace(/\ /g, "&nbsp;").replace(/\n/g, "<br />")
+    fix = ($text) -> $text.replace(/\n/g, "<br />")
 
     histpos     : 0     # current place in the history list
     history     : null  # the history list
-    kb          : null  # the kb element
+    input       : null  # the input element
     output      : null  # the output element
     prompt      : null  # the prompt element
     default     :
@@ -61,8 +61,8 @@ do ($ = jQuery, window, document) ->
       welcome   : ''    # inital message to display
       prompt    : '> '  # standard prompt
       promptAlt : '? '  # alternate prompt
-      commandHandle: -> # callback to handle kb input
-      cancelHandle: ->  # ctrl/c interrupt
+      handle    : ->    # callback to handle input
+      break     : ->    # ctrl/c interrupt
 
     #
     # Create a new console
@@ -75,7 +75,7 @@ do ($ = jQuery, window, document) ->
 
       $this = @
       $this.history = []
-      @options = $options = $.extend(@default, $options)
+      $options = $.extend(@default, $options)
       $auto = if $options.autofocus then 'autofocus' else ''
       #
       # render the ui
@@ -88,7 +88,7 @@ do ($ = jQuery, window, document) ->
         """
       @output = $container.find('output')
       @prompt = $container.find('#input-line .prompt')
-      @kb = $container.find('#input-line .cmdline')
+      @input = $container.find('#input-line .cmdline')
 
       @prompt.text $options.prompt
       @print "<div>#{$options.welcome}</div>"
@@ -97,7 +97,7 @@ do ($ = jQuery, window, document) ->
       # pass the focus to input
       #
       $(window).on 'click', ($e) ->
-        $this.kb.focus()
+        $this.input.focus()
 
       #
       # check for interrupt
@@ -108,15 +108,15 @@ do ($ = jQuery, window, document) ->
           $e.preventDefault()
 
       #
-      # kb onclick
+      # input onclick
       #
-      @kb.on 'click', ($e) ->
+      @input.on 'click', ($e) ->
         @value = @value # Sets cursor to end of input.
 
       #
       # history (up/down)
       #
-      @kb.on 'keyup', ($e) ->
+      @input.on 'keyup', ($e) ->
 
         return unless $options.history
         $temp = 0
@@ -146,13 +146,13 @@ do ($ = jQuery, window, document) ->
       #
       # ctrl/key
       #
-      @kb.on 'keydown', ($e) ->
+      @input.on 'keydown',  ($e) ->
 
         if ($e.ctrlKey or $e.metaKey)
           switch $e.keyCode
 
             when KEY_C  # CTRL/C - break
-              $options.cancelHandle()
+              $options.break @
               $e.preventDefault()
               $e.stopPropagation()
 
@@ -169,7 +169,7 @@ do ($ = jQuery, window, document) ->
       #
       # Enter
       #
-      @kb.on 'keydown', ($e) ->
+      @input.on 'keydown', ($e) ->
 
         switch $e.keyCode
 
@@ -194,7 +194,7 @@ do ($ = jQuery, window, document) ->
             $this.output.append $line
 
             if (@value and @value.trim())
-              $options.commandHandle @value
+              $options.handle @value
             @value = '' # Clear/setup line for next input.
 
 
@@ -207,7 +207,7 @@ do ($ = jQuery, window, document) ->
     #
     clear: ($input) ->
       @output.html ''
-      $input?.value = ''
+      $input.value = ''
 
     #
     # Set the console prompt
@@ -215,8 +215,11 @@ do ($ = jQuery, window, document) ->
     # @param  [Number]  prompt selector
     # @return [Void]
     #
-    setPrompt: ($prompt=false) ->
-      @prompt.text if $prompt then @options.altPrompt else @options.prompt
+    prompt: ($prompt=0) ->
+      if $prompt is 0
+        @prompt.text $options.prompt
+      else
+        @prompt.text $options.promptAlt
 
     #
     # Print string to output
@@ -226,7 +229,7 @@ do ($ = jQuery, window, document) ->
     #
     print: ($text='') ->
       @output.append fix($text)
-      @kb.get(0).scrollIntoView()
+      @input.get(0).scrollIntoView()
 
     #
     # Print string to output
@@ -235,13 +238,10 @@ do ($ = jQuery, window, document) ->
     # @return [Void]
     #
     println: ($text='') ->
-      @output.append fix("#{$text}\n")
-      @kb.get(0).scrollIntoView()
+      @print "#{$text}\n"
 
     debug: ($text) ->
-      @output.append "<span style=\"color: blue;\">"+fix("#{$text}\n")+"</span>"
-      @kb.get(0).scrollIntoView()
+      @println "<span style=\"color: blue;\">#{$text}</span>"
 
     highlight: ($text) ->
-      @output.append "<span style=\"color: yellow;\">"+fix("#{$text}\n")+"</span>"
-      @kb.get(0).scrollIntoView()
+      @println "<span style=\"color: yellow;\">#{$text}</span>"

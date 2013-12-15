@@ -109,13 +109,14 @@ window.rte = rte =
       return
 
     reset: () ->
-      #@console.sync()
+      @console.sync()
 
     setPrompt: ($prompt) ->
       @console.setPrompt $prompt
 
     debug: ($text) ->
-      @console.debug $text
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix("#{$text}\n")
 
     #
     # hilite output
@@ -124,7 +125,9 @@ window.rte = rte =
     # @return none
     #
     hilite: ($text) ->
-      @console.hilite $text
+
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix("#{$text}\n")
 
     #
     # print to console
@@ -133,7 +136,8 @@ window.rte = rte =
     # @return none
     #
     print: ($text) ->
-      @console.print $text
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix($text)
 
     #
     # print with newline to console
@@ -142,7 +146,8 @@ window.rte = rte =
     # @return none
     #
     println: ($text) ->
-      @console.println $text
+      $text = if $text? then String($text) else ''
+      @console.inner.append _fix("#{$text}\n")
 
     #
     # create a new console, erasing the previuos
@@ -150,8 +155,13 @@ window.rte = rte =
     # @return none
     #
     clear: ->
+      $(@element).html ''
       @console = $(@element).console(@)
-      @console.clear()
+
+      @console.inner.offset({top: 0, left: 0});
+      @console.inner.width($(document).width()-12);
+      @console.inner.height($(document).height()-12);
+      #@console.sync()
 
 
 
