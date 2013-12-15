@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| consol$e.coffee
+#| console.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -14,14 +14,6 @@
 # jQuery console plugin
 #
 
-#
-# Define a plugin
-#
-# @param  [Object]  jQuery
-# @param  [object]  window
-# @param  [object]  document
-# @return [Void]
-#
 do ($ = jQuery, window, document) ->
 
 
@@ -192,6 +184,7 @@ do ($ = jQuery, window, document) ->
             $input.autofocus = false
             $input.readOnly = true
             $this.output.append $line
+            $this.kb.get(0).scrollIntoView()
 
             if (@value and @value.trim())
               $options.commandHandle @value
@@ -216,7 +209,7 @@ do ($ = jQuery, window, document) ->
     # @return [Void]
     #
     setPrompt: ($prompt=false) ->
-      @prompt.text if $prompt then @options.altPrompt else @options.prompt
+      @prompt.text if $prompt then @options.promptAlt else @options.prompt
 
     #
     # Print string to output

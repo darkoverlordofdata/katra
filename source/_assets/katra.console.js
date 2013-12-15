@@ -149,6 +149,7 @@
               $input.autofocus = false;
               $input.readOnly = true;
               $this.output.append($line);
+              $this.kb.get(0).scrollIntoView();
               if (this.value && this.value.trim()) {
                 $options.commandHandle(this.value);
               }
@@ -166,7 +167,7 @@
         if ($prompt == null) {
           $prompt = false;
         }
-        return this.prompt.text($prompt ? this.options.altPrompt : this.options.prompt);
+        return this.prompt.text($prompt ? this.options.promptAlt : this.options.prompt);
       };
 
       Console.prototype.print = function($text) {
