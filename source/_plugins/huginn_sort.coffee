@@ -13,9 +13,6 @@
 #
 # sort huginn-plugin
 #
-fs = require('fs')
-path = require('path')
-
 module.exports = (Liquid, site, build) ->
 
   $by = site.sort.by ? 'date'

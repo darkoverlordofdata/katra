@@ -19,14 +19,16 @@ url: http://darkoverlordofdata.com/katra
 
 source: ./source
 destination: ../gh-pages
+isdev: true
+
 
 plugins:
   - huginn-asset-bundler
 
 asset_bundler:
   compress:
-    js: true
-    css: true
+    js: false
+    css: false
   base_path: /assets/
   shim: /katra
   server_url: //cdn.darkoverlordofdata.com/

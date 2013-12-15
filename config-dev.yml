@@ -19,6 +19,8 @@ name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 url: http://localhost/
 port: 0xd16a
+isdev: false
+
 
 source: ./source
 destination: ./gh-pages/katra
@@ -31,13 +33,13 @@ plugins:
 
 asset_bundler:
   compress:
-    js: true
-    css: true
+    js: false
+    css: false
   base_path: /assets/
   shim: /katra
   server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
-  dev: true
+  dev: false
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
     css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"
