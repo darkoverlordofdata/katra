@@ -64,39 +64,7 @@
 
 <div class="container-narrow">
 
-
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="nav nav-tabs" id="katra-menu">
-            <li class="active"><a href="#katra-tab-content" data-toggle="tab">Eliza</a></li>
-            <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
-            <li><a href="#katra-tab-help" data-toggle="tab" title="View the help text">Help</a></li>
-        </ul>
-
-        <div class="tab-content">
-
-            <div class="tab-pane active" id="katra-tab-content">
-                <p>Eliza is always frustrating to talk with. I don't think that she listens.</p>
-<p>This is a GW-Basic version.</p>
-            </div>
-
-            <div class="tab-pane" id="katra-tab-source">
-                <pre id='source' class="prettyprint lang-katra">
-                </pre>
-            </div>
-
-            <div class="tab-pane" id="katra-tab-help">
-                <pre id='help'>
-                </pre>
-            </div>
-
-        </div>
-    </div>
-</div>
-<p><a class="btn btn-primary" target="eliza" href="/katra/run/?basic=gwbasic&amp;program=eliza">
-    <i class="icon-play-circle icon-white"></i> launch...</a>
-<a class="btn" href="/katra/">back</a></p>
-
+<h3>The page you requested was not found</h3>
 
 <hr />
 <p class="pagination-centered">
@@ -115,17 +83,3 @@
 
 </body>
 </html>
-<script type='text/javascript' src='/katra/assets/f2cadc9a67a6767843a79bccf2b3be60.js'></script>
-
-
-<script>
-$(function() {
-    $.get('/katra/bas/gwbasic/eliza.bas', function(data) {
-        $('#source').html(String(data));
-        prettyPrint();
-    });
-    $.get('/katra/', function(data) {
-        $('#help').html(String(data));
-    });
-});
-</script>
