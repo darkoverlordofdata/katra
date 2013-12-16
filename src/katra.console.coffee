@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| console.coffee
+#| katra.console.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -66,35 +66,36 @@ do ($ = jQuery, window, document) ->
     constructor: ($container, $options) ->
 
       $this = @
-      $this.history = []
+      @history = []
       @options = $options = $.extend(@default, $options)
-      $auto = if $options.autofocus then 'autofocus' else ''
       #
       # render the ui
       #
+
       $container.html """
-          <output></output>
-          <div id="input-line" class="input-line">
-          <div class="prompt"></div><div><input class="cmdline" #{$auto} /></div>
-          </div>
+          <span class="output"></span>
+          <span class="enter">
+          <span class="prompt"></span><span contenteditable class="input"></span>
+          </span>
         """
-      @output = $container.find('output')
-      @prompt = $container.find('#input-line .prompt')
-      @kb = $container.find('#input-line .cmdline')
+      @output = $container.find('.output')
+      @prompt = $container.find('span .prompt')
+      @kb = $container.find('span .input')
+      @kb.focus() if $options.autofocus
 
       @prompt.text $options.prompt
-      @print "<div>#{$options.welcome}</div>"
+      @print "<div>#{$options.welcomeMessage}</div>"
 
       #
       # pass the focus to input
       #
-      $(window).on 'click', ($e) ->
-        $this.kb.focus()
+      $(window).on 'click', ($e) =>
+        @kb.focus()
 
       #
       # check for interrupt
       #
-      $(document.body).on 'keydown', ($e) ->
+      $(document.body).on 'keydown', ($e) =>
         if $e.keyCode is KEY_ESC 
           $e.stopPropagation()
           $e.preventDefault()
@@ -102,43 +103,43 @@ do ($ = jQuery, window, document) ->
       #
       # kb onclick
       #
-      @kb.on 'click', ($e) ->
-        @value = @value # Sets cursor to end of input.
+      @kb.on 'click', ($e) =>
+        @kb.text @kb.text() # Sets cursor to end of input.
 
       #
       # history (up/down)
       #
-      @kb.on 'keyup', ($e) ->
+      @kb.on 'keyup', ($e) =>
 
         return unless $options.history
         $temp = 0
 
-        if $this.history.length
+        if @history.length
           if $e.keyCode is KEY_UP or $e.keyCode is KEY_DOWN
-            if $this.history[$this.histpos]
-              $this.history[$this.histpos] = @value
+            if @history[@histpos]
+              @history[@histpos] = @kb.text()
             else
-              $temp = @value
+              $temp = @kb.text()
 
           if $e.keyCode is KEY_UP
-            $this.histpos--
-            if $this.histpos < 0
-              $this.histpos = 0
+            @histpos--
+            if @histpos < 0
+              @histpos = 0
 
           else if $e.keyCode is KEY_DOWN
-            $this.histpos++
-            if $this.histpos > $this.history.length
-              $this.histpos = $this.history.length
+            @histpos++
+            if @histpos > @history.length
+              @histpos = @history.length
 
           if $e.keyCode is KEY_UP or $e.keyCode is KEY_DOWN
-            @value = if $this.history[$this.histpos] then $this.history[$this.histpos] else $temp
-            @value = @value # Sets cursor to end of input.
+            @kb.text(if @history[@histpos] then @history[@histpos] else $temp)
+            @kb.text @kb.text() # Sets cursor to end of input.
 
 
       #
       # ctrl/key
       #
-      @kb.on 'keydown', ($e) ->
+      @kb.on 'keydown', ($e) =>
 
         if ($e.ctrlKey or $e.metaKey)
           switch $e.keyCode
@@ -149,7 +150,7 @@ do ($ = jQuery, window, document) ->
               $e.stopPropagation()
 
             when KEY_R  # CTRL/R - reset
-              $this.clear @
+              @clear()
               $e.preventDefault()
               $e.stopPropagation()
 
@@ -161,46 +162,38 @@ do ($ = jQuery, window, document) ->
       #
       # Enter
       #
-      @kb.on 'keydown', ($e) ->
+      @kb.on 'keydown', ($e) =>
 
         switch $e.keyCode
 
           when KEY_BS
-            return if not @value
+            return if not @kb.text()
 
           when KEY_TAB
             $e.preventDefault
 
           when KEY_CR
-            if @value
-              $this.history[$this.history.length] = @value
-              $this.histpos = $this.history.length
+            if @kb.text()
+              @history[@history.length] = @kb.text()
+              @histpos = @history.length
 
             # Duplicate current input and append to output section.
-            $line = @parentNode.parentNode.cloneNode(true)
-            $line.removeAttribute 'id'
-            $line.classList.add 'line'
-            $input = $line.querySelector('input.cmdline')
-            $input.autofocus = false
-            $input.readOnly = true
-            $this.output.append $line
-            $this.kb.get(0).scrollIntoView()
+            @output.append @kb.text()+"<br />"
+            @kb.get(0).scrollIntoView()
 
-            if (@value and @value.trim())
-              $options.commandHandle @value
-            @value = '' # Clear/setup line for next input.
+            if (@kb.text() and @kb.text().trim())
+              $options.commandHandle @kb.text()
+            @kb.text('') # Clear/setup line for next input.
 
 
 
     #
     # Clear the console
     #
-    # @param  [String]  html string
     # @return [Void]
     #
-    clear: ($input) ->
+    clear: () ->
       @output.html ''
-      $input?.value = ''
 
     #
     # Set the console prompt

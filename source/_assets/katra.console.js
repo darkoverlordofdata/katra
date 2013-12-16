@@ -55,19 +55,22 @@
       };
 
       function Console($container, $options) {
-        var $auto, $this;
+        var $this,
+          _this = this;
         $this = this;
-        $this.history = [];
+        this.history = [];
         this.options = $options = $.extend(this["default"], $options);
-        $auto = $options.autofocus ? 'autofocus' : '';
-        $container.html("<output></output>\n<div id=\"input-line\" class=\"input-line\">\n<div class=\"prompt\"></div><div><input class=\"cmdline\" " + $auto + " /></div>\n</div>");
-        this.output = $container.find('output');
-        this.prompt = $container.find('#input-line .prompt');
-        this.kb = $container.find('#input-line .cmdline');
+        $container.html("<span class=\"output\"></span>\n<span class=\"enter\">\n<span class=\"prompt\"></span><span contenteditable class=\"input\"></span>\n</span>");
+        this.output = $container.find('.output');
+        this.prompt = $container.find('span .prompt');
+        this.kb = $container.find('span .input');
+        if ($options.autofocus) {
+          this.kb.focus();
+        }
         this.prompt.text($options.prompt);
-        this.print("<div>" + $options.welcome + "</div>");
+        this.print("<div>" + $options.welcomeMessage + "</div>");
         $(window).on('click', function($e) {
-          return $this.kb.focus();
+          return _this.kb.focus();
         });
         $(document.body).on('keydown', function($e) {
           if ($e.keyCode === KEY_ESC) {
@@ -76,7 +79,7 @@
           }
         });
         this.kb.on('click', function($e) {
-          return this.value = this.value;
+          return _this.kb.text(_this.kb.text());
         });
         this.kb.on('keyup', function($e) {
           var $temp;
@@ -84,28 +87,28 @@
             return;
           }
           $temp = 0;
-          if ($this.history.length) {
+          if (_this.history.length) {
             if ($e.keyCode === KEY_UP || $e.keyCode === KEY_DOWN) {
-              if ($this.history[$this.histpos]) {
-                $this.history[$this.histpos] = this.value;
+              if (_this.history[_this.histpos]) {
+                _this.history[_this.histpos] = _this.kb.text();
               } else {
-                $temp = this.value;
+                $temp = _this.kb.text();
               }
             }
             if ($e.keyCode === KEY_UP) {
-              $this.histpos--;
-              if ($this.histpos < 0) {
-                $this.histpos = 0;
+              _this.histpos--;
+              if (_this.histpos < 0) {
+                _this.histpos = 0;
               }
             } else if ($e.keyCode === KEY_DOWN) {
-              $this.histpos++;
-              if ($this.histpos > $this.history.length) {
-                $this.histpos = $this.history.length;
+              _this.histpos++;
+              if (_this.histpos > _this.history.length) {
+                _this.histpos = _this.history.length;
               }
             }
             if ($e.keyCode === KEY_UP || $e.keyCode === KEY_DOWN) {
-              this.value = $this.history[$this.histpos] ? $this.history[$this.histpos] : $temp;
-              return this.value = this.value;
+              _this.kb.text(_this.history[_this.histpos] ? _this.history[_this.histpos] : $temp);
+              return _this.kb.text(_this.kb.text());
             }
           }
         });
@@ -117,7 +120,7 @@
                 $e.preventDefault();
                 return $e.stopPropagation();
               case KEY_R:
-                $this.clear(this);
+                _this.clear();
                 $e.preventDefault();
                 return $e.stopPropagation();
               case KEY_S:
@@ -128,39 +131,31 @@
           }
         });
         this.kb.on('keydown', function($e) {
-          var $input, $line;
           switch ($e.keyCode) {
             case KEY_BS:
-              if (!this.value) {
+              if (!_this.kb.text()) {
 
               }
               break;
             case KEY_TAB:
               return $e.preventDefault;
             case KEY_CR:
-              if (this.value) {
-                $this.history[$this.history.length] = this.value;
-                $this.histpos = $this.history.length;
+              if (_this.kb.text()) {
+                _this.history[_this.history.length] = _this.kb.text();
+                _this.histpos = _this.history.length;
               }
-              $line = this.parentNode.parentNode.cloneNode(true);
-              $line.removeAttribute('id');
-              $line.classList.add('line');
-              $input = $line.querySelector('input.cmdline');
-              $input.autofocus = false;
-              $input.readOnly = true;
-              $this.output.append($line);
-              $this.kb.get(0).scrollIntoView();
-              if (this.value && this.value.trim()) {
-                $options.commandHandle(this.value);
+              _this.output.append(_this.kb.text() + "<br />");
+              _this.kb.get(0).scrollIntoView();
+              if (_this.kb.text() && _this.kb.text().trim()) {
+                $options.commandHandle(_this.kb.text());
               }
-              return this.value = '';
+              return _this.kb.text('');
           }
         });
       }
 
-      Console.prototype.clear = function($input) {
-        this.output.html('');
-        return $input != null ? $input.value = '' : void 0;
+      Console.prototype.clear = function() {
+        return this.output.html('');
       };
 
       Console.prototype.setPrompt = function($prompt) {
