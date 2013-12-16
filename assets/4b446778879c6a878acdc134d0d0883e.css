@@ -935,8 +935,10 @@ div.console  {
     word-wrap: break-word;
     font-size: 14px;
     margin-top: 1em;
-    width:100%;
-    height: 100%;
+    /*width:100%;*/
+    /*height: 100%;*/
+    width:575px;
+    height: 768px;
     padding:0.5em;
     overflow:auto;
 }
