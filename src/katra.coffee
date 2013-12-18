@@ -250,7 +250,7 @@ _start = () ->
 _run = () ->
 
   $wait = false
-  _con.mode = MODE_RUN
+  _con.setMode MODE_RUN
 
   try
     until _eop or $wait
@@ -269,7 +269,7 @@ _run = () ->
     $wait = false
 
   unless $wait
-    _con.mode = MODE_REPL
+    _con.setMode MODE_REPL
     _con.println 'DONE'
 
 
@@ -679,8 +679,8 @@ class Console extends rte.Console
   mode: MODE_REPL
   exec: true
 
-  constructor: ($welcome) ->
-    @welcomeMessage = $welcome
+  constructor: ($title) ->
+    @title = $title
     super()
   #
   # callback to handle interrupt
@@ -693,7 +693,7 @@ class Console extends rte.Console
     _con.reset()
     _con.setPrompt false
     _run()
-    _con.console.scrollToBottom()
+    #_con.console.scrollToBottom()
 
   #
   # callback to handle the input

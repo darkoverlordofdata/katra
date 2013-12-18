@@ -13,7 +13,7 @@
 #
 # sort huginn-plugin
 #
-module.exports = (Liquid, site, build) ->
+module.exports = (site) ->
 
   $by = site.sort.by ? 'date'
   $swap = switch site.sort.direction ? 'asc'

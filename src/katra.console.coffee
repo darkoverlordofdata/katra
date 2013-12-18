@@ -36,23 +36,24 @@ do ($ = jQuery, window, document) ->
     KEY_ESC     = 27    # Escape
     KEY_UP      = 38    # Up Arrow
     KEY_DOWN    = 40    # Down Arrow
-    KEY_C       = 67    # 'C'
-    KEY_R       = 82    # 'R'
-    KEY_S       = 83    # 'S'
+    KEY_C       = 67    # Ctrl/C
+    KEY_R       = 82    # Ctrl/R
 
     fix = ($text) -> $text.replace(/\ /g, "&nbsp;").replace(/\n/g, "<br />")
 
     histpos     : 0     # current place in the history list
     history     : null  # the history list
-    kb          : null  # the kb element
+    input       : null  # the kb element
     output      : null  # the output element
     prompt      : null  # the prompt element
+    mode        : 0     # prompt mode
+    options     : null
     default     :
       autofocus : true  # autofocus the console
       history   : true  # allow history (up/down keys)
-      welcome   : ''    # inital message to display
-      prompt    : '> '  # standard prompt
-      promptAlt : '? '  # alternate prompt
+      title     : ''    # inital message to display
+      prompt    : '>'   # standard prompt
+      promptAlt : '?'   # alternate prompt
       commandHandle: -> # callback to handle kb input
       cancelHandle: ->  # ctrl/c interrupt
 
@@ -65,32 +66,26 @@ do ($ = jQuery, window, document) ->
     #
     constructor: ($container, $options) ->
 
-      $this = @
       @history = []
-      @options = $options = $.extend(@default, $options)
+      @options = $.extend(@default, $options)
       #
       # render the ui
       #
 
       $container.html """
           <span class="output"></span>
-          <span class="enter">
-          <span class="prompt"></span><span contenteditable class="input"></span>
-          </span>
+          <span class="prompt"></span><input class="input"></input>
         """
       @output = $container.find('.output')
-      @prompt = $container.find('span .prompt')
-      @kb = $container.find('span .input')
-      @kb.focus() if $options.autofocus
-
-      @prompt.text $options.prompt
-      @print "<div>#{$options.welcomeMessage}</div>"
-
+      @prompt = $container.find('.prompt')
+      @input = $container.find('.input')
+      @input.focus() if @options.autofocus
+      @prompt.text @options.prompt
       #
       # pass the focus to input
       #
       $(window).on 'click', ($e) =>
-        @kb.focus()
+        @input.focus()
 
       #
       # check for interrupt
@@ -103,23 +98,24 @@ do ($ = jQuery, window, document) ->
       #
       # kb onclick
       #
-      @kb.on 'click', ($e) =>
-        @kb.text @kb.text() # Sets cursor to end of input.
+      @input.on 'click', ($e) =>
+        $e.target.value = $e.target.value # Sets cursor to end of input.
 
       #
       # history (up/down)
       #
-      @kb.on 'keyup', ($e) =>
+      @input.on 'keyup', ($e) =>
 
-        return unless $options.history
+        return unless @options.history
+        $input = $e.target
         $temp = 0
 
         if @history.length
           if $e.keyCode is KEY_UP or $e.keyCode is KEY_DOWN
             if @history[@histpos]
-              @history[@histpos] = @kb.text()
+              @history[@histpos] = $input.value
             else
-              $temp = @kb.text()
+              $temp = @input.value
 
           if $e.keyCode is KEY_UP
             @histpos--
@@ -132,20 +128,21 @@ do ($ = jQuery, window, document) ->
               @histpos = @history.length
 
           if $e.keyCode is KEY_UP or $e.keyCode is KEY_DOWN
-            @kb.text(if @history[@histpos] then @history[@histpos] else $temp)
-            @kb.text @kb.text() # Sets cursor to end of input.
+            $input.value = if @history[@histpos] then @history[@histpos] else $temp
+            $input.value = $input.value # Sets cursor to end of input.
+
 
 
       #
       # ctrl/key
       #
-      @kb.on 'keydown', ($e) =>
+      @input.on 'keydown', ($e) =>
 
         if ($e.ctrlKey or $e.metaKey)
           switch $e.keyCode
 
             when KEY_C  # CTRL/C - break
-              $options.cancelHandle()
+              @options.cancelHandle()
               $e.preventDefault()
               $e.stopPropagation()
 
@@ -154,37 +151,35 @@ do ($ = jQuery, window, document) ->
               $e.preventDefault()
               $e.stopPropagation()
 
-            when KEY_S
-              $container.toggleClass('flicker')
-              $e.preventDefault()
-              $e.stopPropagation()
-
       #
       # Enter
       #
-      @kb.on 'keydown', ($e) =>
+      @input.on 'keydown', ($e) =>
+
+        $input = $e.target
 
         switch $e.keyCode
 
           when KEY_BS
-            return if not @kb.text()
+            return if not $input.value
 
           when KEY_TAB
             $e.preventDefault
 
           when KEY_CR
-            if @kb.text()
-              @history[@history.length] = @kb.text()
+
+            if $input.value
+              @history[@history.length] = $input.value #text()
               @histpos = @history.length
 
             # Duplicate current input and append to output section.
-            @output.append @kb.text()+"<br />"
-            @kb.get(0).scrollIntoView()
+            $prompt = if @mode then @options.promptAlt else @options.prompt
+            @output.append "#{$prompt}#{$input.value}<br />"
+            $input.scrollIntoView()
 
-            if (@kb.text() and @kb.text().trim())
-              $options.commandHandle @kb.text()
-            @kb.text('') # Clear/setup line for next input.
-
+            if ($input.value and $input.value.trim())
+              @options.commandHandle $input.value
+            $input.value = '' # Clear/setup line for next input.
 
 
     #
@@ -194,15 +189,20 @@ do ($ = jQuery, window, document) ->
     #
     clear: () ->
       @output.html ''
+      @println @options.title if @options.title
 
     #
-    # Set the console prompt
+    # Sets the console prompt:
     #
-    # @param  [Number]  prompt selector
+    #   true  - use alternate prompt
+    #   false - use standard prompt
+    #
+    # @param  [Boolean]  prompt selector
     # @return [Void]
     #
     setPrompt: ($prompt=false) ->
       @prompt.text if $prompt then @options.promptAlt else @options.prompt
+      @mode = $prompt
 
     #
     # Print string to output
@@ -212,22 +212,34 @@ do ($ = jQuery, window, document) ->
     #
     print: ($text='') ->
       @output.append fix($text)
-      @kb.get(0).scrollIntoView()
+      @input.get(0).scrollIntoView()
 
     #
-    # Print string to output
+    # Print string to output with new line
     #
     # @param  [String]  html string
     # @return [Void]
     #
     println: ($text='') ->
       @output.append fix("#{$text}\n")
-      @kb.get(0).scrollIntoView()
+      @input.get(0).scrollIntoView()
 
+    #
+    # Print debug string to output with new line
+    #
+    # @param  [String]  html string
+    # @return [Void]
+    #
     debug: ($text) ->
       @output.append "<span style=\"color: blue;\">"+fix("#{$text}\n")+"</span>"
-      @kb.get(0).scrollIntoView()
+      @input.get(0).scrollIntoView()
 
+    #
+    # Print highlighted string to output with new line
+    #
+    # @param  [String]  html string
+    # @return [Void]
+    #
     highlight: ($text) ->
       @output.append "<span style=\"color: yellow;\">"+fix("#{$text}\n")+"</span>"
-      @kb.get(0).scrollIntoView()
+      @input.get(0).scrollIntoView()

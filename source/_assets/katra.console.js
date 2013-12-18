@@ -10,7 +10,7 @@
       return (_ref = $.data(this, 'console')) != null ? _ref : $.data(this, 'console', new Console(this, $options));
     };
     return Console = (function() {
-      var KEY_BS, KEY_C, KEY_CR, KEY_DOWN, KEY_ESC, KEY_R, KEY_S, KEY_TAB, KEY_UP, fix;
+      var KEY_BS, KEY_C, KEY_CR, KEY_DOWN, KEY_ESC, KEY_R, KEY_TAB, KEY_UP, fix;
 
       KEY_BS = 8;
 
@@ -28,8 +28,6 @@
 
       KEY_R = 82;
 
-      KEY_S = 83;
-
       fix = function($text) {
         return $text.replace(/\ /g, "&nbsp;").replace(/\n/g, "<br />");
       };
@@ -38,39 +36,40 @@
 
       Console.prototype.history = null;
 
-      Console.prototype.kb = null;
+      Console.prototype.input = null;
 
       Console.prototype.output = null;
 
       Console.prototype.prompt = null;
 
+      Console.prototype.mode = 0;
+
+      Console.prototype.options = null;
+
       Console.prototype["default"] = {
         autofocus: true,
         history: true,
-        welcome: '',
-        prompt: '> ',
-        promptAlt: '? ',
+        title: '',
+        prompt: '>',
+        promptAlt: '?',
         commandHandle: function() {},
         cancelHandle: function() {}
       };
 
       function Console($container, $options) {
-        var $this,
-          _this = this;
-        $this = this;
+        var _this = this;
         this.history = [];
-        this.options = $options = $.extend(this["default"], $options);
-        $container.html("<span class=\"output\"></span>\n<span class=\"enter\">\n<span class=\"prompt\"></span><span contenteditable class=\"input\"></span>\n</span>");
+        this.options = $.extend(this["default"], $options);
+        $container.html("<span class=\"output\"></span>\n<span class=\"prompt\"></span><input class=\"input\"></input>");
         this.output = $container.find('.output');
-        this.prompt = $container.find('span .prompt');
-        this.kb = $container.find('span .input');
-        if ($options.autofocus) {
-          this.kb.focus();
+        this.prompt = $container.find('.prompt');
+        this.input = $container.find('.input');
+        if (this.options.autofocus) {
+          this.input.focus();
         }
-        this.prompt.text($options.prompt);
-        this.print("<div>" + $options.welcomeMessage + "</div>");
+        this.prompt.text(this.options.prompt);
         $(window).on('click', function($e) {
-          return _this.kb.focus();
+          return _this.input.focus();
         });
         $(document.body).on('keydown', function($e) {
           if ($e.keyCode === KEY_ESC) {
@@ -78,21 +77,22 @@
             return $e.preventDefault();
           }
         });
-        this.kb.on('click', function($e) {
-          return _this.kb.text(_this.kb.text());
+        this.input.on('click', function($e) {
+          return $e.target.value = $e.target.value;
         });
-        this.kb.on('keyup', function($e) {
-          var $temp;
-          if (!$options.history) {
+        this.input.on('keyup', function($e) {
+          var $input, $temp;
+          if (!_this.options.history) {
             return;
           }
+          $input = $e.target;
           $temp = 0;
           if (_this.history.length) {
             if ($e.keyCode === KEY_UP || $e.keyCode === KEY_DOWN) {
               if (_this.history[_this.histpos]) {
-                _this.history[_this.histpos] = _this.kb.text();
+                _this.history[_this.histpos] = $input.value;
               } else {
-                $temp = _this.kb.text();
+                $temp = _this.input.value;
               }
             }
             if ($e.keyCode === KEY_UP) {
@@ -107,62 +107,69 @@
               }
             }
             if ($e.keyCode === KEY_UP || $e.keyCode === KEY_DOWN) {
-              _this.kb.text(_this.history[_this.histpos] ? _this.history[_this.histpos] : $temp);
-              return _this.kb.text(_this.kb.text());
+              $input.value = _this.history[_this.histpos] ? _this.history[_this.histpos] : $temp;
+              return $input.value = $input.value;
             }
           }
         });
-        this.kb.on('keydown', function($e) {
+        this.input.on('keydown', function($e) {
           if ($e.ctrlKey || $e.metaKey) {
             switch ($e.keyCode) {
               case KEY_C:
-                $options.cancelHandle();
+                _this.options.cancelHandle();
                 $e.preventDefault();
                 return $e.stopPropagation();
               case KEY_R:
                 _this.clear();
                 $e.preventDefault();
                 return $e.stopPropagation();
-              case KEY_S:
-                $container.toggleClass('flicker');
-                $e.preventDefault();
-                return $e.stopPropagation();
             }
           }
         });
-        this.kb.on('keydown', function($e) {
+        this.input.on('keydown', function($e) {
+          var $input, $prompt;
+          $input = $e.target;
           switch ($e.keyCode) {
             case KEY_BS:
-              if (!_this.kb.text()) {
+              if (!$input.value) {
 
               }
               break;
             case KEY_TAB:
               return $e.preventDefault;
             case KEY_CR:
-              if (_this.kb.text()) {
-                _this.history[_this.history.length] = _this.kb.text();
+              if ($input.value) {
+                _this.history[_this.history.length] = $input.value;
                 _this.histpos = _this.history.length;
               }
-              _this.output.append(_this.kb.text() + "<br />");
-              _this.kb.get(0).scrollIntoView();
-              if (_this.kb.text() && _this.kb.text().trim()) {
-                $options.commandHandle(_this.kb.text());
+              $prompt = _this.mode ? _this.options.promptAlt : _this.options.prompt;
+              _this.output.append("" + $prompt + $input.value + "<br />");
+              $input.scrollIntoView();
+              if ($input.value && $input.value.trim()) {
+                _this.options.commandHandle($input.value);
               }
-              return _this.kb.text('');
+              return $input.value = '';
           }
         });
       }
 
       Console.prototype.clear = function() {
-        return this.output.html('');
+        this.output.html('');
+        if (this.options.title) {
+          return this.println(this.options.title);
+        }
       };
 
       Console.prototype.setPrompt = function($prompt) {
         if ($prompt == null) {
           $prompt = false;
         }
-        return this.prompt.text($prompt ? this.options.promptAlt : this.options.prompt);
+        this.prompt.text($prompt ? this.options.promptAlt : this.options.prompt);
+        return this.mode = $prompt;
+      };
+
+      Console.prototype.setMode = function(mode) {
+        this.mode = mode;
       };
 
       Console.prototype.print = function($text) {
@@ -170,7 +177,7 @@
           $text = '';
         }
         this.output.append(fix($text));
-        return this.kb.get(0).scrollIntoView();
+        return this.input.get(0).scrollIntoView();
       };
 
       Console.prototype.println = function($text) {
@@ -178,17 +185,17 @@
           $text = '';
         }
         this.output.append(fix("" + $text + "\n"));
-        return this.kb.get(0).scrollIntoView();
+        return this.input.get(0).scrollIntoView();
       };
 
       Console.prototype.debug = function($text) {
         this.output.append("<span style=\"color: blue;\">" + fix("" + $text + "\n") + "</span>");
-        return this.kb.get(0).scrollIntoView();
+        return this.input.get(0).scrollIntoView();
       };
 
       Console.prototype.highlight = function($text) {
         this.output.append("<span style=\"color: yellow;\">" + fix("" + $text + "\n") + "</span>");
-        return this.kb.get(0).scrollIntoView();
+        return this.input.get(0).scrollIntoView();
       };
 
       return Console;

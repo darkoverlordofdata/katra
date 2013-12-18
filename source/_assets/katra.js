@@ -254,7 +254,7 @@
   _run = function() {
     var $code, $e, $lineno, $statement, $wait, _ref;
     $wait = false;
-    _con.mode = MODE_RUN;
+    _con.setMode(MODE_RUN);
     try {
       while (!(_eop || $wait)) {
         _ref = _prg[_pc++], $lineno = _ref[0], $statement = _ref[1];
@@ -276,7 +276,7 @@
       $wait = false;
     }
     if (!$wait) {
-      _con.mode = MODE_REPL;
+      _con.setMode(MODE_REPL);
       return _con.println('DONE');
     }
   };
@@ -622,9 +622,9 @@
 
     Console.prototype.exec = true;
 
-    function Console($welcome) {
+    function Console($title) {
       this.commandHandle = __bind(this.commandHandle, this);
-      this.welcomeMessage = $welcome;
+      this.title = $title;
       Console.__super__.constructor.call(this);
     }
 
@@ -633,8 +633,7 @@
       _con.print('^C');
       _con.reset();
       _con.setPrompt(false);
-      _run();
-      return _con.console.scrollToBottom();
+      return _run();
     };
 
     Console.prototype.commandHandle = function($line) {

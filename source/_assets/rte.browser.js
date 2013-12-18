@@ -90,6 +90,10 @@
         return this.console.setPrompt($prompt);
       };
 
+      Console.prototype.setMode = function($mode) {
+        return this.mode = $mode;
+      };
+
       Console.prototype.debug = function($text) {
         return this.console.debug($text);
       };

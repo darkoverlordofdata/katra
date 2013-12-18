@@ -114,6 +114,9 @@ window.rte = rte =
     setPrompt: ($prompt) ->
       @console.setPrompt $prompt
 
+    setMode: ($mode) ->
+      @mode = $mode
+
     debug: ($text) ->
       @console.debug $text
 
