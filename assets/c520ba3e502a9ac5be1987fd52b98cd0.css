@@ -968,7 +968,7 @@ button.close{padding:0;cursor:pointer;background:transparent;border:0;-webkit-ap
     div.console  {
         font-size: 65%;
         width: 350px;
-        height:200px;
+        height:220px;
         word-wrap: break-word;
         padding-left:0.5em;
         overflow:auto;
