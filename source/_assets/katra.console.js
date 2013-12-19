@@ -168,10 +168,6 @@
         return this.mode = $prompt;
       };
 
-      Console.prototype.setMode = function(mode) {
-        this.mode = mode;
-      };
-
       Console.prototype.print = function($text) {
         if ($text == null) {
           $text = '';

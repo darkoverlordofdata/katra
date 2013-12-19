@@ -16,11 +16,6 @@
 MODE_REPL       = 0     # Console REPL mode
 MODE_RUN        = 1     # Console RUN mode
 
-_ctrlCodes =
-# C-r
-  82: -> @reset()
-
-
 _fix = ($text) ->
   $text.replace(/\ /g, "&nbsp;").replace(/\n/g, "<br />")
 
@@ -58,12 +53,11 @@ window.rte = rte =
     #
     # jquery.console config:
     #
-    animateScroll: true
     autofocus: true
-    promptLabel: ''
+    prompt: '>'
     promptAlt: '?'
-    promptHistory: true
-    welcomeMessage: ''
+    history: true
+    title: ''
 
     #
     # initialize a console
@@ -72,9 +66,7 @@ window.rte = rte =
     # @param  [String]  prompt  string to print
     # @return none
     #
-    constructor: (@element = '.console', @prompt = '> ') ->
-
-      @promptLabel = @prompt
+    constructor: (@element = '.console', @prompt = '>') ->
       @clear()
 
     #
@@ -107,9 +99,6 @@ window.rte = rte =
     #
     pause: ($set) ->
       return
-
-    reset: () ->
-      #@console.sync()
 
     setPrompt: ($prompt) ->
       @console.setPrompt $prompt

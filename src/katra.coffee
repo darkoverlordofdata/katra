@@ -65,25 +65,6 @@ _xrf  = {}      # line number in _raw[]
 
 
 #
-# Bind to the environment
-#
-# sets up the
-#
-#   Console
-#   FileSystem
-#
-#
-_bind = () ->
-
-  #
-  # @ resolves to the global object
-  #
-  Object.defineProperties @,
-    _con: get: -> if not __con? then __con = new Console(_wel) else __con
-    _fs:  get: -> if not __fs? then __fs = new rte.FileSystem() else __fs
-
-
-#
 # Initialize the program memory
 #
 # @param  [Bool]  all if true, then clear code data also
@@ -211,7 +192,7 @@ _exec = ($version, $name, $init=true) ->
       _parse _txt
       _start()
       _run()
-      _con.reset()
+      #_con.reset()
     _con.pause false
   true
 #
@@ -690,7 +671,6 @@ class Console extends rte.Console
   cancelHandle: () ->
     _eop = true
     _con.print '^C'
-    _con.reset()
     _con.setPrompt false
     _run()
     #_con.console.scrollToBottom()
@@ -735,9 +715,13 @@ class Console extends rte.Console
         _parse $line
 
 #
-# Bind to the environmet
+# Late binding to the environment
 #
-_bind()
+do ->
+  Object.defineProperties @,
+    _con: get: -> if not __con? then __con = new Console(_wel) else __con
+    _fs:  get: -> if not __fs? then __fs = new rte.FileSystem() else __fs
+
 
 #
 # The Katra Public API
@@ -756,7 +740,7 @@ katra =
       when 'atari'    then _exec V_ATARI,   $args.program
       when 'gwbasic'  then _exec V_GWBASIC, $args.program
       when 'hp2k'     then _exec V_HP2000,  $args.program
-      else  _con.reset()
+      else  _con.setMode MODE_REPL
 
   #
   # Set the file system root

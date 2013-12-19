@@ -44,8 +44,6 @@
         }
       };
 
-      Console.prototype.reset = function() {};
-
       Console.prototype.setPrompt = function($prompt) {};
 
       Console.prototype.pause = function($set) {

@@ -69,8 +69,6 @@ module.exports =
         process.stdout.write @altPrompt
 
 
-    reset: () ->
-      return
     setPrompt: ($prompt) ->
       return
 

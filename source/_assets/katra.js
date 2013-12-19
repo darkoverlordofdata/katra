@@ -222,7 +222,6 @@
         _parse(_txt);
         _start();
         _run();
-        _con.reset();
       }
       return _con.pause(false);
     });
@@ -631,7 +630,6 @@
     Console.prototype.cancelHandle = function() {
       _eop = true;
       _con.print('^C');
-      _con.reset();
       _con.setPrompt(false);
       return _run();
     };
@@ -672,7 +670,28 @@
 
   })(rte.Console);
 
-  _bind();
+  (function() {
+    return Object.defineProperties(this, {
+      _con: {
+        get: function() {
+          if (__con == null) {
+            return __con = new Console(_wel);
+          } else {
+            return __con;
+          }
+        }
+      },
+      _fs: {
+        get: function() {
+          if (__fs == null) {
+            return __fs = new rte.FileSystem();
+          } else {
+            return __fs;
+          }
+        }
+      }
+    });
+  })();
 
   katra = {
     main: function($args) {
@@ -686,7 +705,7 @@
         case 'hp2k':
           return _exec(V_HP2000, $args.program);
         default:
-          return _con.reset();
+          return _con.setMode(MODE_REPL);
       }
     },
     setRoot: function($root) {
