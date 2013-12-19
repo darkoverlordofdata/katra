@@ -14,120 +14,54 @@
 # The Katra AST Framework
 #
 
-util = if window? then window.util else require("./util")
 rte = if window? then window.rte else require("./rte.node")
 
-V_HP2000    = 0       # circa 1973 - StarTrek
-V_ATARI     = 1       # circa 1976 - Hunt the Wumpus
-V_GWBASIC   = 2       # circa 1979 - Eliza
+V_HP2000        = 0       # circa 1973 - StarTrek
+V_ATARI         = 1       # circa 1976 - Hunt the Wumpus
+V_GWBASIC       = 2       # circa 1979 - Eliza
 
-GOSUB       = 1       # Stack frame identifier: Gosub..Return
-FOR         = 2       # Stack frame identifier: For..Next
+GOSUB           = 1       # Stack frame identifier: Gosub..Return
+FOR             = 2       # Stack frame identifier: For..Next
 
-PHASE_SCAN  = 0       # Processed during scan
-PHASE_EXEC  = 1       # Executable statements
+PHASE_SCAN      = 0       # Processed during scan
+PHASE_EXEC      = 1       # Executable statements
 
-MODE_REPL   = 0       # Console REPL mode
-MODE_RUN    = 1       # Console RUN mode
+MODE_REPL       = 0       # Console REPL mode
+MODE_RUN        = 1       # Console RUN mode
 
-_con        = null    # console object
-_fs         = null    # file system object
+PRINTF = ///    # Printf style format parser
+  (\%)          # pct - % escape
+  ([-])?        # flag left justify
+  ([+ ])?       # flag sign
+  ([0])?        # flag padding
+  (\d*)?        # field width
+  (\.\d*)?      # decimal precision
+  ([\%ds])      # output specifier
+  ///g
 
-arrays      = {}      # arrays storage
-benchmarks  = {}      # benchmarks
-common      = []      # common storage variables
-data        = []      # data statements
-trace       = false   # trace on/off
-dp          = 0       # data pointer
-eop         = false   # end of program flag
-functions   = {}      # user defined functions
-gw          = false   # use GW-Basic style strings
-name        = ''      # workspace name
-offset      = 0       # option base offset for DIM
-pc          = 0       # instruction counter
-prog        = []      # executing code
-raw         = {}      # raw code as entered
-stack       = []      # execution stack
-strings     = {}      # strings storage
-text        = ''      # source text
-type        = 0       # HP2000 | ATARI | GW
-title       = ''      # console welcome message
-variables   = {}      # non-scalar variables storage
-xrf         = {}      # line number in raw[]
-
-#
-# Implement the abstract Console class
-# by overriding the handler method
-#
-class Console extends rte.Console
-
-  #
-  # @property [Integer] mode - repl or program execution?
-  #
-  mode: MODE_REPL
-  exec: true
-
-  constructor: ($title) ->
-    @title = $title
-    super()
-  #
-  # callback to handle interrupt
-  #
-  # @return none
-  #
-  cancelHandle: () ->
-    eop = true
-    con.print '^C'
-    con.setPrompt false
-    run()
-
-  #
-  # callback to handle the input
-  #
-  # @param  [String]  line  the line that was wntered
-  # @return none
-  #
-  commandHandle: ($line) =>
-    switch @mode
-
-    #
-    # Input statement
-    #
-      when MODE_RUN
-
-        for $item in $line.trim().split(",")
-          @buffer.push if isNaN($item) then String($item) else Number($item)
-
-        if @buffer.length < @vars.length
-          @continuedPrompt = true
-          return
-        else
-          for $name, $ix in @vars
-            if /\$$/.test($name)
-              strings[$name] = @buffer[$ix]
-            else
-              variables[$name] = @buffer[$ix]
-
-          @continuedPrompt = false
-          run()
-          return true
-
-    #
-    # Interacive (REPL)
-    #
-      when MODE_REPL
-
-        $line = if /\n$/.test($line) then $line else "#{$line}\n"
-        parse $line
-
-#
-# Late binding to the environment
-#
-do ->
-  Object.defineProperties @,
-    con: get: -> if not _con? then _con = new Console(title) else _con
-    fs:  get: -> if not _fs? then _fs = new rte.FileSystem() else _fs
-
+__con = null    # console object
+__fs  = null    # file system object
+_ary  = {}      # arrays storage
+_com  = []      # common storage variables
+_dat  = []      # data statements
+_dbg  = false   # trace on/off
+_dp   = 0       # data pointer
+_eop  = false   # end of program flag
+_fn   = {}      # user defined functions
+_gw   = false   # use GW-Basic style strings
+_mrk  = {}      # benchmarks
+_nam  = ''      # workspace name
+_ofs  = 0       # option base offset for DIM
+_pc   = 0       # instruction counter
+_prg  = []      # executing code
+_raw  = {}      # raw code as entered
+_stk  = []      # execution stack
+_str  = {}      # strings storage
+_txt  = ''      # source text
+_var  = {}      # non-scalar variables storage
+_ver  = 0       # HP2000 | ATARI | GW
+_wel  = ''      # console welcome message
+_xrf  = {}      # line number in _raw[]
 
 
 #
@@ -136,30 +70,30 @@ do ->
 # @param  [Bool]  all if true, then clear code data also
 # @return none
 #
-initialize = ($all) ->
-  arrays  = {}
-  common  = []
-  data  = []
-  dp   = 0
-  eop  = false
-  functions   = {}
-  benchmarks  = {}
-  offset  = 0
-  pc   = 0
-  raw  = {} if $all
-  stack  = []
-  strings  = {}
-  variables  = {}
-  xrf  = {}
+_init = ($all) ->
+  _ary  = {}
+  _com  = []
+  _dat  = []
+  _dp   = 0
+  _eop  = false
+  _fn   = {}
+  _mrk  = {}
+  _ofs  = 0
+  _pc   = 0
+  _raw  = {} if $all
+  _stk  = []
+  _str  = {}
+  _var  = {}
+  _xrf  = {}
 
 
 #
-# Value Of
+# Eval
 #
-# @param  [Mixed] the object to value
+# @param  [Mixed] the object to eval
 # @return [Mixed] value
 #
-valueOf = ($value) ->
+_eval = ($value) ->
   if $value.eval? then $value.eval()
   else $value
 
@@ -170,7 +104,7 @@ valueOf = ($value) ->
 # @param  [String]  version  basic: V_ATARI | V_GWBASIC | V_HP2000
 # @return [String] the qualified file name
 #
-qualifyFilename = ($name, $version = V_HP2000) ->
+_qualify = ($name, $version = V_HP2000) ->
   switch $version
     when V_ATARI    then 'bas/atari/'+$name
     when V_GWBASIC  then 'bas/gwbasic/'+$name
@@ -183,6 +117,19 @@ qualifyFilename = ($name, $version = V_HP2000) ->
 
 
 #
+# Clean up the raw source code
+#
+# @param  [String]  code  the raw source code
+# @return [Array<String>]
+#
+_clean = ($code) ->
+
+  $code = $code[1..] if $code.charCodeAt(0) is 0xfeff # Skip BOM
+  $code = ($code + '\n')    # make sure there is an ending LF
+  .replace(/\r/g,  '\n')    # replace CR's with LF's
+  .replace(/\n+/g, '\n')    # remove duplicate LF's
+
+#
 # Save the source code
 #
 # @param  [String]  version  basic: V_ATARI | V_GWBASIC | V_HP2000
@@ -190,12 +137,12 @@ qualifyFilename = ($name, $version = V_HP2000) ->
 # @param  [String]  code  the raw source code text
 # @return [Void]
 #
-save = ($version, $name, $data, $next) ->
+_save = ($version, $name, $data, $next) ->
   $name = if $name[0] is '"' then $name[1...-1] else $name
-  con.pause true
-  fs.writeFile qualifyFilename($name, $version), $data, () ->
+  _con.pause true
+  _fs.writeFile _qualify($name, $version), $data, () ->
     $next?()
-    con.pause false
+    _con.pause false
   true
 
 
@@ -204,23 +151,23 @@ save = ($version, $name, $data, $next) ->
 #
 # @return true
 #
-load = ($version, $name, $init=true, $next) ->
+_load = ($version, $name, $init=true, $next) ->
   $name = if $name[0] is '"' then $name[1...-1] else $name
-  initialize $init
-  con.pause true
-  fs.readFile qualifyFilename($name, $version), ($err, $data) ->
-    if $err? then con.println $err
+  _init $init
+  _con.pause true
+  _fs.readFile _qualify($name, $version), ($err, $data) ->
+    if $err? then _con.println $err
     else
-      $data = util.clean($data).split('\n')   # Get lines of text
+      $data = _clean($data).split('\n')   # Get lines of text
       $data.shift() if isNaN($data[0][0]) # Skip header
       $data.shift() if $data[0] is ""     # Skip blank line
-      name = if /^[A-Za-z]/.test($name) then $name else $name[1..]
-      type = $version
-      gw = if type is V_GWBASIC then true else false
-      text = $data.join('\n')
-      $next?(text)
-      parse text
-    con.pause false
+      _nam = if /^[A-Za-z]/.test($name) then $name else $name[1..]
+      _ver = $version
+      _gw = if _ver is V_GWBASIC then true else false
+      _txt = $data.join('\n')
+      $next?(_txt)
+      _parse _txt
+    _con.pause false
   true
 
 #
@@ -228,81 +175,81 @@ load = ($version, $name, $init=true, $next) ->
 #
 # @return true
 #
-execute = ($version, $name, $init=true) ->
-  initialize $init
-  con.pause true
-  fs.readFile qualifyFilename($name, $version), ($err, $data) ->
-    if $err? then con.println $err
+_exec = ($version, $name, $init=true) ->
+  _init $init
+  _con.pause true
+  _fs.readFile _qualify($name, $version), ($err, $data) ->
+    if $err? then _con.println $err
     else
-      $data = util.clean($data).split('\n')   # Get lines of text
+      $data = _clean($data).split('\n')   # Get lines of text
       $data.shift() if isNaN($data[0][0]) # Skip header
       $data.shift() if $data[0] is ""     # Skip blank line
-      name = if /^[A-Za-z]/.test($name) then $name else $name[1..]
-      type = $version
-      gw = if type is V_GWBASIC then true else false
-      text = $data.join('\n')
-      parse text
-      start()
-      run()
-    con.pause false
+      _nam = if /^[A-Za-z]/.test($name) then $name else $name[1..]
+      _ver = $version
+      _gw = if _ver is V_GWBASIC then true else false
+      _txt = $data.join('\n')
+      _parse _txt
+      _start()
+      _run()
+    _con.pause false
   true
 #
 # Start running
 #
 # @return none
 #
-start = () ->
+_start = () ->
 
   #
   # Load the raw code into the program buffer
   #
-  prog = []
-  for $lineno, $statement of raw
+  _prg = []
+  for $lineno, $statement of _raw
     while $lineno.length<4
       $lineno = '0'+$lineno
-    prog.push [$lineno, $statement]
-  prog.sort()
+    _prg.push [$lineno, $statement]
+  _prg.sort()
 
   #
   # Initialize and create lineno cross reference
   #
-  initialize false
-  for [$lineno, $statement] in prog
+  _init false
+  for [$lineno, $statement] in _prg
     if $statement.code.type is PHASE_SCAN
       $statement.code.eval()
-    xrf[parseInt($lineno, 10)] = pc++
+    _xrf[parseInt($lineno, 10)] = _pc++
 
-  pc = 0
+  _pc = 0
 
 #
 # Run a started program
 #
 # @return none
 #
-run = () ->
+_run = () ->
 
   $wait = false
-  con.setMode MODE_RUN
+  _con.setMode MODE_RUN
 
   try
-    until eop or $wait
+    until _eop or $wait
 
-      [$lineno, $statement] = prog[pc++]
+      [$lineno, $statement] = _prg[_pc++]
       $code = $statement.code
 
       if $statement.code.type is PHASE_EXEC
-        con.debug $lineno+' '+$code.toString() if trace
+        _con.debug $lineno+' '+$code.toString() if _dbg
         $wait = $code.eval()
-      con.setPrompt $wait
-      eop = true if pc >= prog.length
+      _con.setPrompt $wait
+      _eop = true if _pc >= _prg.length
 
   catch $e
-    con.println $e
+    _con.println $e
     $wait = false
 
   unless $wait
-    con.setMode MODE_REPL
-    con.println 'DONE'
+    _con.setMode MODE_REPL
+    _con.println 'DONE'
 
 
 #
@@ -311,31 +258,31 @@ run = () ->
 # @param [String] code  the next program
 # @return none
 #
-chain = ($code) ->
-  $save = Array(common.length)
+_chain = ($code) ->
+  $save = Array(_com.length)
   #
   # save common values
   #
-  for $var, $ix in common
+  for $var, $ix in _com
     switch $var.type
-      when 0 then $save[$ix] = strings[$var.name]
-      when 1 then $save[$ix] = variables[$var.name]
-      when 2 then $save[$ix] = arrays[$var.name]
+      when 0 then $save[$ix] = _str[$var.name]
+      when 1 then $save[$ix] = _var[$var.name]
+      when 2 then $save[$ix] = _ary[$var.name]
 
-  initialize true
-  parse $code
-  start()
+  _init true
+  _parse $code
+  _start()
 
   #
   # restore common from saved values
   #
-  for $var, $ix in common
+  for $var, $ix in _com
     switch $var.type
-      when 0 then strings[$var.name] = $save[$ix]
-      when 1 then variables[$var.name] = $save[$ix]
-      when 2 then arrays[$var.name] = $save[$ix]
+      when 0 then _str[$var.name] = $save[$ix]
+      when 1 then _var[$var.name] = $save[$ix]
+      when 2 then _ary[$var.name] = $save[$ix]
 
-  run()
+  _run()
 
 
 #
@@ -344,7 +291,7 @@ chain = ($code) ->
 # @param  [String] code basic code to parse
 # @return true if successful, else false
 #
-parse = ($code) ->
+_parse = ($code) ->
 
   kc = if window? then window.kc else require("./kc")
 
@@ -360,13 +307,13 @@ parse = ($code) ->
     #   Replace IF ...= with IF ...==
     #
     if /^\d*\s*IF/i.test $line
-      $code[$index] = $line = fixupIf($line)
+      $code[$index] = $line = _fixup_if($line)
 
     #
     #   Insert missing semicolons in PRINT statements
     #
     if /^\d*\s*PRINT/i.test $line
-      $code[$index] = $line = fixupPrint($line)
+      $code[$index] = $line = _fixup_print($line)
 
     #
     #   Remove trailing comments (GWBASIC) ...
@@ -383,7 +330,7 @@ parse = ($code) ->
   try
     kc.parse $code.join('\n')
   catch $e
-    con.debug String($e)
+    _con.debug String($e)
 
   return true
 
@@ -398,7 +345,7 @@ parse = ($code) ->
 # @param  [String] line line of basic code
 # @retun [String] the cleansed string
 #
-fixupIf = ($line) ->
+_fixup_if = ($line) ->
 
   $line = $line.split(/THEN/i)
 
@@ -418,7 +365,7 @@ fixupIf = ($line) ->
 # @param  [String] line line of basic code
 # @retun [String] the cleansed string
 #
-fixupPrint = ($line) ->
+_fixup_print = ($line) ->
 
   SEP = ';:,' # print list separators
 
@@ -463,20 +410,88 @@ fixupPrint = ($line) ->
 # @param  [Number]  dim2  size of the 2nd dimension
 # @return [Array] the new array
 #
-dim = ($init, $dim1, $dim2) ->
+_dim = ($init, $dim1, $dim2) ->
 
   $a = []
   switch arguments.length
     when 2
-      for $i in [offset...$dim1+1]
+      for $i in [_ofs...$dim1+1]
         $a[$i] = $init
     when 3
-      for $i in [offset...$dim1+1]
+      for $i in [_ofs...$dim1+1]
         $a[$i] = []
-        for $j in [offset...$dim2+1]
+        for $j in [_ofs...$dim2+1]
           $a[$i][$j] = $init
   return $a
 
+#
+# flatten a nested list
+#
+# @param  [Array] list  nested list
+# @return [Array] the flattened list
+#
+_flatten = ($list) ->
+
+  return [] unless $list?
+
+  $a = []
+  for $item in $list
+    if Array.isArray($item)
+      $a = $a.concat _flatten($item)
+    else
+      $a.push $item
+  return $a
+
+
+#
+# printf style output
+#
+# @param  [String] fmt  printf style format string
+# @param  [Array] list  list of args
+# @return [String] the formatted output
+#
+_sprintf = ($fmt, $list) ->
+
+  $count = 0
+  #
+  # format each print spec/value pair
+  #
+  _foreach = ($match, $pct, $just, $sign, $pad=' ', $width, $prec, $spec, $ofset, $string) ->
+
+    $value = String($list[$count++])
+    switch $spec
+      #
+      # %% = Escaped %
+      #
+      when '%'
+        '%'
+      #
+      # String format
+      #
+      when 's'
+        if $width?
+          $width = parseInt($width, 10)
+          if $value.length < $width
+            if $just? # left
+              return Array($width-$value.length+1).join($pad) + $value
+            else      # right
+              return $value + Array($width-$value.length+1).join($pad)
+        $value
+      #
+      # Number format
+      #
+      when 'd'
+        if $width?
+          $width = parseInt($width, 10)
+          if $value.length < $width
+            if $just? # left
+              return $value + Array($width-$value.length+1).join($pad)
+            else      # right
+              return Array($width-$value.length+1).join($pad) + $value
+        $value
+
+
+  $fmt.replace(PRINTF, _foreach)
 
 #
 # Construct a printf style format string from an IMAGE
@@ -484,7 +499,7 @@ dim = ($init, $dim1, $dim2) ->
 # @param  [Array] image
 # @return [Array] the printf style format string
 #
-format = ($image = []) ->
+_format = ($image = []) ->
 
   $out = ''
   $count = 1
@@ -505,7 +520,7 @@ format = ($image = []) ->
           $out += Array($count+1).join(' ')
           $count = 1
         when '('
-          $out += Array($count+1).join(format($image))
+          $out += Array($count+1).join(_format($image))
           $count = 1
         when ')'
           return $out
@@ -518,6 +533,29 @@ format = ($image = []) ->
 
   return $out
 
+#
+# Pad string to length
+#
+# @param  [String] value
+# @param  [Integer] len
+# @param  [String] pad char
+# @return [String] the padded string
+#
+_pad = ($value, $len, $pad = ' ') ->
+
+  $right = not isNaN($value)  # right justify numerics
+  $value = String($value)     # ensure that we work with a string
+  if $right
+    if $value.length < $len
+      Array($len-$value.length+1, $pad) + $value
+    else
+      $value.substr(0, $len)
+
+  else
+    if $value.length < $len
+      $value + Array($len-$value.length+1, $pad)
+    else
+      $value.substr(0, $len)
 
 
 #
@@ -528,8 +566,8 @@ format = ($image = []) ->
 # @param  [String]  name  name of the marker
 # @return [Void]
 #
-benchmark = ($name) ->
-  benchmarks[$name] = new Date()
+_mark = ($name) ->
+  _mrk[$name] = new Date()
 
 
 #
@@ -541,12 +579,12 @@ benchmark = ($name) ->
 # @param  [String]  point2   a particular marked point
 # @return [Integer]
 #
-elapsedTime = ($point1, $point2) ->
+_elapsed_time = ($point1, $point2) ->
 
-  return 0 if not benchmarks[$point1]?
+  return 0 if not _mrk[$point1]?
 
-  benchmarks[$point2] = new Date() if not benchmarks[$point2]?
-  benchmarks[$point2] - benchmarks[$point1]
+  _mrk[$point2] = new Date() if not _mrk[$point2]?
+  _mrk[$point2] - _mrk[$point1]
 
 #
 # ZER
@@ -609,6 +647,80 @@ class Keyword
   eval: -> false
 
 #
+# Implement the abstract Console class
+# by overriding the handler method
+#
+class Console extends rte.Console
+
+  #
+  # @property [Integer] mode - repl or program execution?
+  #
+  mode: MODE_REPL
+  exec: true
+
+  constructor: ($title) ->
+    @title = $title
+    super()
+  #
+  # callback to handle interrupt
+  #
+  # @return none
+  #
+  cancelHandle: () ->
+    _eop = true
+    _con.print '^C'
+    _con.setPrompt false
+    _run()
+
+  #
+  # callback to handle the input
+  #
+  # @param  [String]  line  the line that was wntered
+  # @return none
+  #
+  commandHandle: ($line) =>
+    switch @mode
+
+      #
+      # Input statement
+      #
+      when MODE_RUN
+
+        for $item in $line.trim().split(",")
+          @buffer.push if isNaN($item) then String($item) else Number($item)
+
+        if @buffer.length < @vars.length
+          @continuedPrompt = true
+          return
+        else
+          for $name, $ix in @vars
+            if /\$$/.test($name)
+              _str[$name] = @buffer[$ix]
+            else
+              _var[$name] = @buffer[$ix]
+
+          @continuedPrompt = false
+          _run()
+          return true
+
+      #
+      # Interacive (REPL)
+      #
+      when MODE_REPL
+
+        $line = if /\n$/.test($line) then $line else "#{$line}\n"
+        _parse $line
+
+#
+# Late binding to the environment
+#
+do ->
+  Object.defineProperties @,
+    _con: get: -> if not __con? then __con = new Console(_wel) else __con
+    _fs:  get: -> if not __fs? then __fs = new rte.FileSystem() else __fs
+
+
+#
 # The Katra Public API
 #
 katra =
@@ -620,12 +732,12 @@ katra =
   # @return [Void]
   #
   main: ($args) ->
-    title = $args.title ? title
+    _wel = $args.title ? _wel
     switch $args.basic
-      when 'atari'    then execute V_ATARI,   $args.program
-      when 'gwbasic'  then execute V_GWBASIC, $args.program
-      when 'hp2k'     then execute V_HP2000,  $args.program
-      else  con.setMode MODE_REPL
+      when 'atari'    then _exec V_ATARI,   $args.program
+      when 'gwbasic'  then _exec V_GWBASIC, $args.program
+      when 'hp2k'     then _exec V_HP2000,  $args.program
+      else  _con.setMode MODE_REPL
 
   #
   # Set the file system root
@@ -634,7 +746,7 @@ katra =
   # @return [Void]
   #
   setRoot: ($root) ->
-    fs.setRoot $root
+    _fs.setRoot $root
 
   #
   # Get the raw program text
@@ -642,7 +754,7 @@ katra =
   # @return [String] the program text
   #
   getText: () ->
-    text
+    _txt
 
   #
   # Command
@@ -660,7 +772,7 @@ katra =
     # @return none
     #
     append: ($0) ->
-      load V_HP2000, $0.split('-')[1], false
+      _load V_HP2000, $0.split('-')[1], false
 
     #
     # Load an atari basic program from file storage
@@ -669,7 +781,7 @@ katra =
     # @return none
     #
     atari: ($0, $next) ->
-      load V_ATARI, $0, true, $next
+      _load V_ATARI, $0, true, $next
 
     #
     # Display the folder contents
@@ -683,16 +795,16 @@ katra =
       $cw = 20  # Column width
       $hdr = 'name                '
 
-      fs.readDir $dir, ($files) ->
+      _fs.readDir $dir, ($files) ->
         $col = 0
-        con.hilite "\n#{$dir}\n#{Array($nc+1).join($hdr)}"
+        _con.hilite "\n#{$dir}\n#{Array($nc+1).join($hdr)}"
 
         for $file in $files
           $file = $file.split('.')[0]
           $file += " " while $file.length < $cw
-          con.print $file
-          con.println() if ($col++) % $nc is $nc-1
-        con.print "\n#{con.prompt}" unless window?
+          _con.print $file
+          _con.println() if ($col++) % $nc is $nc-1
+        _con.print "\n#{_con.prompt}" unless window?
 
 
     #
@@ -701,7 +813,7 @@ katra =
     # @return none
     #
     cls: () ->
-      con.clear()
+      _con.clear()
 
 
     #
@@ -717,7 +829,7 @@ katra =
       $end = $start unless $end
 
       for $lineno in [$start...$end]
-        if raw[$lineno]? then delete raw[$lineno]
+        if _raw[$lineno]? then delete _raw[$lineno]
 
     #
     # Dir
@@ -738,7 +850,7 @@ katra =
     # @return none
     #
     exec: ($0) ->
-      execute V_HP2000, $0.split('-')[1]
+      _exec V_HP2000, $0.split('-')[1]
 
     #
     # Files
@@ -759,7 +871,7 @@ katra =
     # @return none
     #
     get: ($0, $next) ->
-      load V_HP2000, $0.split('-')[1], true, $next
+      _load V_HP2000, $0.split('-')[1], true, $next
 
     #
     # Load a gwbasic program from file storage
@@ -768,7 +880,7 @@ katra =
     # @return none
     #
     gwbasic: ($0, $next) ->
-      load V_GWBASIC, $0, true, $next
+      _load V_GWBASIC, $0, true, $next
 
     #
     # List line(s)
@@ -791,7 +903,7 @@ katra =
 
       $lines = []
 
-      for $lineno, $statement of raw
+      for $lineno, $statement of _raw
         while $lineno.length<5
           $lineno = '0'+$lineno
         $lines.push [$lineno, $statement]
@@ -802,9 +914,9 @@ katra =
         $code = $statement.code
         if $start?
           if $lineno >= parseInt($start, 10) and $lineno <= parseInt($end, 10)
-            con.println $lineno+' '+$code
+            _con.println $lineno+' '+$code
         else
-          con.println $lineno+' '+ $code
+          _con.println $lineno+' '+ $code
 
     #
     # Name the program in local storage
@@ -813,7 +925,7 @@ katra =
     # @return none
     #
     name: ($0) ->
-      name = $0.split('-')[1]
+      _nam = $0.split('-')[1]
 
     #
     # Delete a program from local storage
@@ -822,8 +934,8 @@ katra =
     # @return none
     #
     purge: ($0) ->
-      fs.deleteFile qualifyFilename($0.split('-')[1], type), ($err) ->
-        if $err? then con.println $err
+      _fs.deleteFile _qualify($0.split('-')[1], _ver), ($err) ->
+        if $err? then _con.println $err
 
 
     #
@@ -840,7 +952,7 @@ katra =
     # @return none
     #
     renum: ($0) ->
-      con.println "Renumber Not Implemented"
+      _con.println "Renumber Not Implemented"
 
     #
     # Run the program
@@ -849,9 +961,9 @@ katra =
     # @return none
     #
     run: ($0) ->
-      if Object.keys(raw).length>0
-        start()
-        run()
+      if Object.keys(_raw).length>0
+        _start()
+        _run()
 
     #
     # Save the program
@@ -860,33 +972,33 @@ katra =
     #
     save: () ->
 
-      return con.println "Name not set" if name is ''
+      return _con.println "Name not set" if _nam is ''
 
       $lines = []
       $text = ''
 
-      for $lineno, $statement of raw
+      for $lineno, $statement of _raw
         $lines.push [$lineno, $statement.code]
 
       $lines.sort()
       for [$lineno, $code] in $lines
         $text += $lineno+' '+$code+'\n'
 
-      save type, name, $text[0...-1], ($err) ->
-        if $err? then con.println $err
+      _save _ver, _nam, $text[0...-1], ($err) ->
+        if $err? then _con.println $err
 
 
     #
     # Scratch memory
     #
     scr: () ->
-      initialize true
+      _init true
 
     #
     # Tron|Troff
     #
-    troff: () -> trace = false
-    tron: () -> trace = true
+    troff: () -> _dbg = false
+    tron: () -> _dbg = true
 
 
   #
@@ -919,7 +1031,7 @@ katra =
       constructor: ($code, $lineno) ->
 
         if $lineno?
-          raw[$lineno] =
+          _raw[$lineno] =
             lineno: $lineno
             code: $code
         else
@@ -975,7 +1087,7 @@ katra =
         @is_string = /\$$/.test(@name)
         if $delim?
           @is_array = true
-          @dims = util.flatten($dims)
+          @dims = _flatten($dims)
           @dim1 = @dims[0]
           @dim2 = @dims[1]
         else @is_array = false
@@ -986,18 +1098,18 @@ katra =
       let: ($value) ->
         if @is_string
 
-          if gw
+          if _gw
             if @dim2?
               $dim1 = @dim1.eval()
               $dim2 = @dim2.eval()
-              strings[@name][$dim1][$dim2] = $value
+              _str[@name][$dim1][$dim2] = $value
 
             else if @dim1?
               $dim1 = @dim1.eval()
-              strings[@name][$dim1] = $value
+              _str[@name][$dim1] = $value
 
             else
-              strings[@name] = $value
+              _str[@name] = $value
 
           else
             if @dim2?
@@ -1008,33 +1120,33 @@ katra =
                 throw 'Invalid String index: '+@toString()
               $len = $end-$start
               $value = $value.substr(0,$len)
-              $value = util.pad($value, $len)
+              $value = _pad($value, $len)
 
-              $str = strings[@name]
-              strings[@name] = $str.substr(0,$start)+$value+$str.substr($end)
+              $str = _str[@name]
+              _str[@name] = $str.substr(0,$start)+$value+$str.substr($end)
 
             else if @dim1?
               $start = @dim1.eval()-1
-              $str = strings[@name]
-              strings[@name] = $str.substr(0,$start)+$value+$str.substr($start+$value.length)
+              $str = _str[@name]
+              _str[@name] = $str.substr(0,$start)+$value+$str.substr($start+$value.length)
 
             else
-              $len = strings[@name].length
+              $len = _str[@name].length
               if $value.length < $len
                 $value += Array($len-$value.length+1).join(' ')
-              strings[@name] = $value
+              _str[@name] = $value
 
         else if @dim2?
           $dim1 = @dim1.eval()
           $dim2 = @dim2.eval()
-          arrays[@name][$dim1][$dim2] = $value
+          _ary[@name][$dim1][$dim2] = $value
 
         else if @dim1?
           $dim1 = @dim1.eval()
-          arrays[@name][$dim1] = $value
+          _ary[@name][$dim1] = $value
 
         else
-          variables[@name] = $value
+          _var[@name] = $value
 
       #
       # Get the variable value
@@ -1042,18 +1154,18 @@ katra =
       eval: () ->
 
         if @is_string
-          if gw
+          if _gw
             if @dim2?
               $dim1 = @dim1.eval()
               $dim2 = @dim2.eval()
-              strings[@name]?[$dim1]?[$dim2] ? ''
+              _str[@name]?[$dim1]?[$dim2] ? ''
 
             else if @dim1?
               $dim1 = @dim1.eval()
-              strings[@name]?[$dim1] ? ''
+              _str[@name]?[$dim1] ? ''
 
             else
-              strings[@name] ? ''
+              _str[@name] ? ''
 
           else
             if @dim2?
@@ -1062,26 +1174,26 @@ katra =
               $end = @dim2.eval()
               if $end < $start
                 throw 'Invalid String index: '+@toString()
-              strings[@name]?.slice($start, $end) ? ''
+              _str[@name]?.slice($start, $end) ? ''
 
             else if @dim1?
               $start = @dim1.eval()-1
-              strings[@name]?.slice($start) ? ''
+              _str[@name]?.slice($start) ? ''
 
             else
-              strings[@name] ? ''
+              _str[@name] ? ''
 
         else if @dim2?
           $dim1 = @dim1.eval()
           $dim2 = @dim2.eval()
-          arrays[@name]?[$dim1]?[$dim2] ? 0
+          _ary[@name]?[$dim1]?[$dim2] ? 0
 
         else if @dim1?
           $dim1 = @dim1.eval()
-          arrays[@name]?[$dim1] ? 0
+          _ary[@name]?[$dim1] ? 0
 
         else
-          variables[@name] ? 0
+          _var[@name] ? 0
 
       #
       # @return the string representaion
@@ -1111,7 +1223,7 @@ katra =
       # Execute
       #
       eval: ->
-        offset = @base
+        _ofs = @base
         return false
 
       #
@@ -1126,16 +1238,16 @@ katra =
     Chain: class Chain extends Keyword
       constructor: (@program) ->
       eval: ->
-        con.pause true
-        fs.readFile @program, ($err, $data) ->
+        _con.pause true
+        _fs.readFile @program, ($err, $data) ->
           if $err?
-            con.println $err
+            _con.println $err
           else
-            type = $data.type
-            name = $data.name
-            gw = if type is V_GWBASIC then true else false
-            chain $data.data
-          con.pause false
+            _ver = $data.type
+            _nam = $data.name
+            _gw = if _ver is V_GWBASIC then true else false
+            _chain $data.data
+          _con.pause false
       #
       # @return the string representaion
       #
@@ -1150,32 +1262,32 @@ katra =
     Com: class Com extends Keyword
       type: PHASE_SCAN # Execute during scan phase
       constructor: ($vars) ->
-        @vars = util.flatten($vars)
+        @vars = _flatten($vars)
       eval: ->
         for $var in @vars
           if /\$$/.test($var.name)
 
-            if gw
+            if _gw
               if $var.dims.length is 0
-                strings[$var.name] = ''
+                _str[$var.name] = ''
               else
-                strings[$var.name] = dim('', $var.dims...)
+                _str[$var.name] = _dim('', $var.dims...)
 
             else
-              strings[$var.name] = Array($var.dims[0]+1).join(' ')
-              common.push
+              _str[$var.name] = Array($var.dims[0]+1).join(' ')
+              _com.push
                 type: 0
                 name: $var.name
           else
 
             if $var.dims.length is 0
-              variables[$var.name] = 0
-              common.push
+              _var[$var.name] = 0
+              _com.push
                 type: 1
                 name: $var.name
             else
-              arrays[$var.name] = dim(0, $var.dims...)
-              common.push
+              _ary[$var.name] = _dim(0, $var.dims...)
+              _com.push
                 type: 2
                 name: $var.name
 
@@ -1195,10 +1307,10 @@ katra =
     Data: class Data extends Keyword
       type: PHASE_SCAN # Execute during scan phase
       constructor: ($data) ->
-        @data = util.flatten($data)
+        @data = _flatten($data)
       eval: ->
-        if data is null then data = []
-        data = data.concat @data
+        if _dat is null then _dat = []
+        _dat = _dat.concat @data
         return false
       #
       # @return the string representaion
@@ -1214,12 +1326,12 @@ katra =
       constructor: (@name, @par, @body) ->
       eval: ->
 
-        functions[@name] = ($par) =>
+        _fn[@name] = ($par) =>
 
-          $tmp = variables[@par]   # variable goes out of scope,
-          variables[@par] = $par   # occluded by the local param
+          $tmp = _var[@par]   # variable goes out of scope,
+          _var[@par] = $par   # occluded by the local param
           $ret = @body.eval() # while we execute the function body
-          variables[@par] = $tmp   # variable returns to scope
+          _var[@par] = $tmp   # variable returns to scope
           $ret
 
         return false
@@ -1237,26 +1349,26 @@ katra =
     Dim: class Dim extends Keyword
       type: PHASE_SCAN # Execute during scan phase
       constructor: ($vars) ->
-        @vars = util.flatten($vars)
+        @vars = _flatten($vars)
       eval: ->
         for $var in @vars
           if /\$$/.test($var.name)
 
-            if gw
+            if _gw
               if $var.dims.length is 0
-                strings[$var.name] = ''
+                _str[$var.name] = ''
               else
-                strings[$var.name] = dim('', $var.dims...)
+                _str[$var.name] = _dim('', $var.dims...)
 
             else
-              strings[$var.name] = Array($var.dims[0]+1).join(' ')
+              _str[$var.name] = Array($var.dims[0]+1).join(' ')
 
           else
 
             if $var.dims.length is 0
-              variables[$var.name] = 0
+              _var[$var.name] = 0
             else
-              arrays[$var.name] = dim(0, $var.dims...)
+              _ary[$var.name] = _dim(0, $var.dims...)
 
         return false
       #
@@ -1270,7 +1382,7 @@ katra =
     #
     End: class End extends Keyword
       eval: ->
-        eop = true
+        _eop = true
         return false
       #
       # @return the string representaion
@@ -1287,7 +1399,7 @@ katra =
           [@port, @time, @status, @var] = [null, @port, @time, @status]
 
       eval: ->
-        con.input '', [@var]
+        _con.input '', [@var]
         return true
 
       #
@@ -1303,10 +1415,10 @@ katra =
     For: class For extends Keyword
       constructor: (@var, @start, @end, @step=new Const(1)) ->
       eval: ->
-        variables[@var] = valueOf(@start)
-        stack.push {
+        _var[@var] = _eval(@start)
+        _stk.push {
           id:		FOR
-          pc:		pc
+          pc:		_pc
           name: @var
           end:	@end
           step:	@step
@@ -1327,15 +1439,15 @@ katra =
     #
     Goto: class Goto extends Keyword
       constructor: (@lineno, $of) ->
-        @of = util.flatten($of)
+        @of = _flatten($of)
       eval: ->
         if @of.length>0
-          $index = valueOf(@lineno)-1
+          $index = _eval(@lineno)-1
           if @of[$index]?
-            pc = xrf[@of[$index]]
+            _pc = _xrf[@of[$index]]
 
         else
-          pc = xrf[parseInt(@lineno, 10)]
+          _pc = _xrf[parseInt(@lineno, 10)]
         return false
 
       #
@@ -1352,11 +1464,11 @@ katra =
     #
     Gosub: class Gosub extends Goto
       constructor: (@lineno, $of) ->
-        @of = util.flatten($of)
+        @of = _flatten($of)
       eval: ->
-        stack.push {
+        _stk.push {
           id:		GOSUB
-          pc:		pc
+          pc:		_pc
         }
         super()
 
@@ -1379,7 +1491,7 @@ katra =
           if @then.eval?
             @then.eval()
           else
-            pc = xrf[parseInt(@then, 10)]
+            _pc = _xrf[parseInt(@then, 10)]
         return false
 
       #
@@ -1393,8 +1505,8 @@ katra =
     #
     Image: class Image extends Keyword
       constructor: ($format = []) ->
-        @source = util.flatten($format)
-        @format = format(@source)
+        @source = _flatten($format)
+        @format = _format(@source)
       eval: ->
         return false
 
@@ -1410,9 +1522,9 @@ katra =
     #
     Input: class Input extends Keyword
       constructor: ($vars, @prompt) ->
-        @vars = util.flatten($vars)
+        @vars = _flatten($vars)
       eval: ->
-        con.input(@prompt, @vars)
+        _con.input(@prompt, @vars)
         return true
 
       #
@@ -1430,14 +1542,14 @@ katra =
     Let: class Let extends Keyword
       constructor: ($vars, @value) ->
         @vars = []
-        for $var in util.flatten($vars)
+        for $var in _flatten($vars)
           if 'string' is typeof $var
             @vars.push new Var($var)
           else
             @vars.push $var
 
       eval: ->
-        $value = valueOf(@value)
+        $value = _eval(@value)
         for $var in @vars
           $var.let $value
         return false
@@ -1459,12 +1571,12 @@ katra =
       eval: ->
         $value = @value.eval()
 
-        if arrays[@var]?
-          $i = arrays[@var].length
-          $j = arrays[@var][offset].length
-          arrays[@var] = dim($value, $i, $j)
+        if _ary[@var]?
+          $i = _ary[@var].length
+          $j = _ary[@var][_ofs].length
+          _ary[@var] = _dim($value, $i, $j)
         else
-          arrays[@var] = dim($value, 10)
+          _ary[@var] = _dim($value, 10)
         return false
 
     #
@@ -1472,11 +1584,11 @@ katra =
     #
     MatRead: class MatRead extends Keyword
       constructor: ($vars) ->
-        @vars = util.flatten($vars)
+        @vars = _flatten($vars)
       eval: ->
         for $var in @vars
-          if dp < data.length
-            $var.let data[dp++].value
+          if _dp < _dat.length
+            $var.let _dat[_dp++].value
           else
             $var.let undefined
 
@@ -1493,7 +1605,7 @@ katra =
     Next: class Next extends Keyword
       constructor: (@var) ->
       eval: ->
-        $frame = stack[stack.length-1]
+        $frame = _stk[_stk.length-1]
         if $frame.id isnt FOR
           throw "Next without for"
 
@@ -1501,20 +1613,20 @@ katra =
         if $frame.name isnt $name
           throw "Mismatched For/Next #{$name}"
 
-        $step = valueOf($frame.step)
+        $step = _eval($frame.step)
         $counter = @var.eval() + $step
         @var.let $counter
 
         if $step < 0
-          if $counter < valueOf($frame.end)
-            stack.pop()
+          if $counter < _eval($frame.end)
+            _stk.pop()
           else
-            pc = $frame.pc
+            _pc = $frame.pc
         else
-          if $counter > valueOf($frame.end)
-            stack.pop()
+          if $counter > _eval($frame.end)
+            _stk.pop()
           else
-            pc = $frame.pc
+            _pc = $frame.pc
         return false
       #
       # @return the string representaion
@@ -1527,16 +1639,16 @@ katra =
     #
     Print: class Print extends Keyword
       constructor: ($items...) ->
-        @items = util.flatten([$items])
+        @items = _flatten([$items])
       eval: ->
         $str = ''
         for $item in @items
-          $str += if isNaN($val = valueOf($item)) then $val else ' '+$val
+          $str += if isNaN($val = _eval($item)) then $val else ' '+$val
 
         if $item in [Semic, Comma]
-          con.print $str
+          _con.print $str
         else
-          con.println $str
+          _con.println $str
         return false
       #
       # @return the string representaion
@@ -1552,19 +1664,19 @@ katra =
     #
     Using: class Using extends Keyword
       constructor: (@lineno, $items...) ->
-        @items = util.flatten($items)
+        @items = _flatten($items)
       eval: ->
 
-        $i = xrf[@lineno]
-        [$lineno, $statement] =  prog[$i]
+        $i = _xrf[@lineno]
+        [$lineno, $statement] =  _prg[$i]
         $args = []
         for $item in @items
-          $args.push valueOf($item)
+          $args.push _eval($item)
 
         if $item in [Semic, Comma]
-          con.print util.sprintf($statement.code.format, $args)
+          _con.print _sprintf($statement.code.format, $args)
         else
-          con.println util.sprintf($statement.code.format, $args)
+          _con.println _sprintf($statement.code.format, $args)
         return false
       #
       # @return the string representaion
@@ -1597,11 +1709,11 @@ katra =
     #
     Read: class Read extends Keyword
       constructor: ($vars) ->
-        @vars = util.flatten($vars)
+        @vars = _flatten($vars)
       eval: ->
         for $var in @vars
-          if dp < data.length
-            $var.let data[dp++].value
+          if _dp < _dat.length
+            $var.let _dat[_dp++].value
           else
             $var.let undefined
 
@@ -1618,7 +1730,7 @@ katra =
     Restore: class Restore extends Keyword
       constructor: (@lineno) ->
       eval: ->
-        dp = 0
+        _dp = 0
         return false
       #
       # @return the string representaion
@@ -1631,10 +1743,10 @@ katra =
     Return: class Return extends Keyword
       constructor: ->
       eval: ->
-        $frame = stack.pop()
+        $frame = _stk.pop()
         while $frame.id isnt GOSUB
-          $frame = stack.pop()
-        pc = $frame.pc
+          $frame = _stk.pop()
+        _pc = $frame.pc
         return false
       #
       # @return the string representaion
@@ -1661,7 +1773,7 @@ katra =
     Stop: class Stop extends Keyword
       constructor: ->
       eval: ->
-        eop = true
+        _eop = true
         return false
       #
       # @return the string representaion
@@ -1675,95 +1787,95 @@ katra =
     #
 
     Max: class Max extends Operator
-      eval: -> Math.max(valueOf(@left), valueOf(@right))
+      eval: -> Math.max(_eval(@left), _eval(@right))
       toString: -> "#{@left} MAX #{@right}"
 
     Min: class Min extends Operator
-      eval: -> Math.min(valueOf(@left), valueOf(@right))
+      eval: -> Math.min(_eval(@left), _eval(@right))
       toString: -> "#{@left} MIN #{@right}"
     #
     # +
     #
     Add: class Add extends Operator
-      eval: -> valueOf(@left) + valueOf(@right)
+      eval: -> _eval(@left) + _eval(@right)
       toString: -> "#{@left} + #{@right}"
     #
     # -
     #
     Sub: class Sub extends Operator
-      eval: -> valueOf(@left) - valueOf(@right)
+      eval: -> _eval(@left) - _eval(@right)
       toString: -> "#{@left} - #{@right}"
     #
     # *
     #
     Mul: class Mul extends Operator
-      eval: -> valueOf(@left) * valueOf(@right)
+      eval: -> _eval(@left) * _eval(@right)
       toString: -> "#{@left} * #{@right}"
     #
     # /
     #
     Div: class Div extends Operator
-      eval: -> valueOf(@left) / valueOf(@right)
+      eval: -> _eval(@left) / _eval(@right)
       toString: -> "#{@left} / #{@right}"
     #
     # ^
     #
     Pow: class Pow extends Operator
-      eval: -> Math.pow(valueOf(@left), valueOf(@right))
+      eval: -> Math.pow(_eval(@left), _eval(@right))
       toString: -> "#{@left} ^ #{@right}"
     #
     # OR
     #
     OR: class OR extends Operator
-      eval: -> valueOf(@left) or valueOf(@right)
+      eval: -> _eval(@left) or _eval(@right)
       toString: -> "#{@left} OR #{@right}"
     #
     # AND
     #
     AND: class AND extends Operator
-      eval: -> valueOf(@left) and valueOf(@right)
+      eval: -> _eval(@left) and _eval(@right)
       toString: -> "#{@left} AND #{@right}"
     #
     # NOT
     #
     NOT: class NOT extends Operator
-      eval: -> not valueOf(@left)
+      eval: -> not _eval(@left)
       toString: -> "NOT #{@left}"
     #
     # <
     #
     LT: class LT extends Operator
-      eval: -> valueOf(@left) < valueOf(@right)
+      eval: -> _eval(@left) < _eval(@right)
       toString: -> "#{@left} < #{@right}"
     #
     # >
     #
     GT: class GT extends Operator
-      eval: -> valueOf(@left) > valueOf(@right)
+      eval: -> _eval(@left) > _eval(@right)
       toString: -> "#{@left} > #{@right}"
     #
     # <=
     #
     LE: class LE extends Operator
-      eval: -> valueOf(@left) <= valueOf(@right)
+      eval: -> _eval(@left) <= _eval(@right)
       toString: -> "#{@left} <= #{@right}"
     #
     # >=
     #
     GE: class GE extends Operator
-      eval: -> valueOf(@left) >= valueOf(@right)
+      eval: -> _eval(@left) >= _eval(@right)
       toString: -> "#{@left} >= #{@right}"
     #
     # ==
     #
     EQ: class EQ extends Operator
-      eval: -> if valueOf(@left) is valueOf(@right) then true else false
+      eval: -> if _eval(@left) is _eval(@right) then true else false
       toString: -> "#{@left} = #{@right}"
     #
     # !=
     #
     NE: class NE extends Operator
-      eval: -> if valueOf(@left) isnt valueOf(@right) then true else false
+      eval: -> if _eval(@left) isnt _eval(@right) then true else false
       toString: -> "#{@left} <> #{@right}"
 
 
@@ -1774,65 +1886,65 @@ katra =
     #
     FN: class FN
       constructor: (@name, @parm) ->
-      eval:     -> functions[@name](valueOf(@parm))
+      eval:     -> _fn[@name](_eval(@parm))
       toString: -> "#{@name}(#{@parm})"
 
     #
     # Basic Builtin Functions
     #
     ABS: class ABS extends BuiltIn
-      eval: -> Math.abs(valueOf(@$0))
+      eval: -> Math.abs(_eval(@$0))
     ATN: class ATN extends BuiltIn
-      eval: -> Math.atan(valueOf(@$0))
+      eval: -> Math.atan(_eval(@$0))
     COS: class COS extends BuiltIn
-      eval: -> Math.cos(valueOf(@$0))
+      eval: -> Math.cos(_eval(@$0))
     EXP: class EXP extends BuiltIn
-      eval: -> Math.exp(valueOf(@$0))
+      eval: -> Math.exp(_eval(@$0))
     INT: class INT extends BuiltIn
-      eval: -> Math.floor(valueOf(@$0))
+      eval: -> Math.floor(_eval(@$0))
     LEN: class LEN extends BuiltIn
-      eval: -> valueOf(@$0).length
+      eval: -> _eval(@$0).length
     LIN: class LIN extends BuiltIn
-      eval: -> Array(Math.abs(valueOf(@$0))+1).join('\n')
+      eval: -> Array(Math.abs(_eval(@$0))+1).join('\n')
     LOG: class LOG extends BuiltIn
-      eval: -> Math.log(valueOf(@$0))
+      eval: -> Math.log(_eval(@$0))
     RND: class RND extends BuiltIn
       eval: -> Math.random()
     SGN: class SGN extends BuiltIn
       eval: ->
-        $0 = valueOf(@$0)
+        $0 = _eval(@$0)
         if $0 < 0 then -1 else if $0 > 0 then 1 else 0
     SIN: class SIN extends BuiltIn
-      eval: -> Math.sin(valueOf(@$0))
+      eval: -> Math.sin(_eval(@$0))
     SPA: class SPA extends BuiltIn
-      eval: -> Array(valueOf(@$0)).join(" ")
+      eval: -> Array(_eval(@$0)).join(" ")
     SQR: class SQR extends BuiltIn
-      eval: -> Math.sqrt(valueOf(@$0))
+      eval: -> Math.sqrt(_eval(@$0))
     TAB: class TAB extends BuiltIn
-      eval: -> Array(Math.floor(valueOf(@$0))).join(" ")
+      eval: -> Array(Math.floor(_eval(@$0))).join(" ")
     TAN: class TAN extends BuiltIn
-      eval: -> Math.tan(valueOf(@$0))
+      eval: -> Math.tan(_eval(@$0))
     TIM: class TIM extends BuiltIn
       eval: ->
-        if valueOf(@$0) is 0 then (new Date()).getMinutes() else (new Date()).getSeconds()
+        if _eval(@$0) is 0 then (new Date()).getMinutes() else (new Date()).getSeconds()
 
     LCASE: class LCASE extends BuiltIn
-      eval: -> valueOf(@$0).toLowerCase()
+      eval: -> _eval(@$0).toLowerCase()
       toString: -> "LCASE(#{@$0}, #{@$1}, #{@$2})"
     LEFT: class LEFT extends BuiltIn
-      eval: -> valueOf(@$0).substr(0, valueOf(@$1)-1)
+      eval: -> _eval(@$0).substr(0, _eval(@$1)-1)
       toString: -> "LEFT(#{@$0}, #{@$1}, #{@$2})"
     MID: class MID extends BuiltIn
-      eval: -> valueOf(@$0).substring(valueOf(@$1), valueOf(@$2))
+      eval: -> _eval(@$0).substring(_eval(@$1), _eval(@$2))
       toString: -> "MID(#{@$0}, #{@$1}, #{@$2})"
     RIGHT: class RIGHT extends BuiltIn
-      eval: -> valueOf(@$0).substr(valueOf(@$1)-1)
+      eval: -> _eval(@$0).substr(_eval(@$1)-1)
       toString: -> "RIGHT(#{@$0}, #{@$1}, #{@$2})"
     SUBSTR: class SUBSTR extends BuiltIn
-      eval: -> valueOf(@$0).substr(valueOf(@$1)-1, valueOf(@$2))
+      eval: -> _eval(@$0).substr(_eval(@$1)-1, _eval(@$2))
       toString: -> "SUBSTR(#{@$0}, #{@$1}, #{@$2})"
     UCASE: class UCASE extends BuiltIn
-      eval: -> valueOf(@$0).toUpperCase()
+      eval: -> _eval(@$0).toUpperCase()
       toString: -> "UCASE(#{@$0}, #{@$1}, #{@$2})"
 
 
