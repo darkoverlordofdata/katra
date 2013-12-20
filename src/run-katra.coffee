@@ -14,6 +14,7 @@
 # Run katra in the browser
 #
 $ ->
+  katra = require('./katra')
   args = undefined # query args
   # parse the query args 
   parseQuery = ->

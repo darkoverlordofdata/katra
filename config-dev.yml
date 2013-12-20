@@ -19,7 +19,7 @@ name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 url: http://localhost/
 port: 0xd16a
-isdev: true
+isdev: false
 
 
 source: ./source

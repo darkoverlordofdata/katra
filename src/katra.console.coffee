@@ -39,6 +39,7 @@ do ($ = jQuery, window, document) ->
     KEY_C       = 67    # Ctrl/C
     KEY_R       = 82    # Ctrl/R
 
+    colors = require('colors')
     fix = ($text) -> $text.replace(/\ /g, "&nbsp;").replace(/\n/g, "<br />")
 
     histpos     : 0     # current place in the history list
@@ -231,7 +232,7 @@ do ($ = jQuery, window, document) ->
     # @return [Void]
     #
     debug: ($text) ->
-      @output.append "<span style=\"color: blue;\">"+fix("#{$text}\n")+"</span>"
+      @output.append fix("#{$text}\n").blue
       @input.get(0).scrollIntoView()
 
     #
@@ -240,6 +241,6 @@ do ($ = jQuery, window, document) ->
     # @param  [String]  html string
     # @return [Void]
     #
-    highlight: ($text) ->
-      @output.append "<span style=\"color: yellow;\">"+fix("#{$text}\n")+"</span>"
+    hilite: ($text) ->
+      @output.append fix("#{$text}\n").yellow
       @input.get(0).scrollIntoView()

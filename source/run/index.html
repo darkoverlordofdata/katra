@@ -19,6 +19,7 @@
         {% bundle %}
         - /_assets/fonts.css
         - /_assets/katra.css
+        - /_assets/katra.console.css
         {% endbundle %}
         <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.css' type='text/css'/>
     {% endif %}
@@ -40,22 +41,12 @@
 {% if site.isdev == true %}
     {% bundle %}
     - /_assets/jquery-2.0.2.min.js
-    - /_assets/katra.console.js
-    - /_assets/rte.browser.js
-    - /_assets/util.js
-    - /_assets/katra.js
-    - /_assets/kc.js
-    - /_assets/run-katra.js
+    - /_assets/bundle.js
     {% endbundle %}
 {% else %}
     <script type="text/javascript" src="//cdn.darkoverlordofdata.com/js/jquery-2.0.2.min.js" ></script>
     {% bundle %}
-    - /_assets/katra.console.js
-    - /_assets/rte.browser.js
-    - /_assets/util.js
-    - /_assets/katra.js
-    - /_assets/kc.js
-    - /_assets/run-katra.js
+    - /_assets/bundle.js
     {% endbundle %}
 {% endif %}
 

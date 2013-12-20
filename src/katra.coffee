@@ -14,8 +14,8 @@
 # The Katra AST Framework
 #
 
-util = if window? then window.util else require("./util")
-rte = if window? then window.rte else require("./rte.node")
+util = require("./util")
+rte = require('./rte')
 
 V_HP2000    = 0       # circa 1973 - StarTrek
 V_ATARI     = 1       # circa 1976 - Hunt the Wumpus
@@ -57,7 +57,7 @@ xrf         = {}      # line number in raw[]
 
 #
 # Implement the abstract Console class
-# by overriding the handler method
+# by overriding the handler methods
 #
 class Console extends rte.Console
 
@@ -346,8 +346,7 @@ chain = ($code) ->
 #
 parse = ($code) ->
 
-  kc = if window? then window.kc else require("./kc")
-
+  kc = require('./kc')
   $code = $code.split('\n')
   #
   # BASIC is a square peg,
@@ -611,7 +610,7 @@ class Keyword
 #
 # The Katra Public API
 #
-katra =
+module.exports = katra =
 
   #
   # main entry point
@@ -1836,4 +1835,3 @@ katra =
       toString: -> "UCASE(#{@$0}, #{@$1}, #{@$2})"
 
 
-if window? then window.katra = katra else module.exports = katra

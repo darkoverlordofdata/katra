@@ -6,9 +6,9 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __slice = [].slice;
 
-  util = typeof window !== "undefined" && window !== null ? window.util : require("./util");
+  util = require("./util");
 
-  rte = typeof window !== "undefined" && window !== null ? window.rte : require("./rte.node");
+  rte = require('./rte');
 
   V_HP2000 = 0;
 
@@ -366,7 +366,7 @@
 
   parse = function($code) {
     var $e, $index, $line, kc, _i, _len;
-    kc = typeof window !== "undefined" && window !== null ? window.kc : require("./kc");
+    kc = require('./kc');
     $code = $code.split('\n');
     for ($index = _i = 0, _len = $code.length; _i < _len; $index = ++_i) {
       $line = $code[$index];
@@ -583,7 +583,7 @@
 
   })();
 
-  katra = {
+  module.exports = katra = {
     main: function($args) {
       var _ref;
       title = (_ref = $args.title) != null ? _ref : title;
@@ -2384,11 +2384,5 @@
       })(BuiltIn)
     }
   };
-
-  if (typeof window !== "undefined" && window !== null) {
-    window.katra = katra;
-  } else {
-    module.exports = katra;
-  }
 
 }).call(this);

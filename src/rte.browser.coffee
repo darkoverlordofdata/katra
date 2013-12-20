@@ -38,7 +38,7 @@ _set_title = ($filename) ->
       document.title += " - [#{$name}]"
 
 
-window.rte = rte =
+module.exports = rte =
 
   #
   # wrapper for jquery.console

@@ -28,7 +28,7 @@
     }
   };
 
-  window.rte = rte = {
+  module.exports = rte = {
     Console: Console = (function() {
       Console.prototype.mode = MODE_REPL;
 

@@ -10,7 +10,7 @@ PRINTF = ///    # Printf style format parser
   ///g
 
 
-util =
+module.exports = util =
   #
   # Clean up the raw source code
   #
@@ -118,4 +118,3 @@ util =
         $value.substr(0, $len)
 
 
-if window? then window.util = util else module.exports = util

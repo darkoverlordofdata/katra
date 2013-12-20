@@ -25,11 +25,9 @@
 */
 %{
 
-    katra = typeof window !== "undefined" && window !== null ? window.katra : require('./katra');
+    katra = require('./katra');
     command = katra.command;
     keyword = katra.keyword;
-
-
 %}
 
 

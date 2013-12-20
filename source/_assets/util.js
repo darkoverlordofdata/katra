@@ -4,7 +4,7 @@
 
   PRINTF = /(\%)([-])?([+])?([0])?(\d*)?(\.\d*)?([\%ds])/g;
 
-  util = {
+  module.exports = util = {
     clean: function($code) {
       if ($code.charCodeAt(0) === 0xfeff) {
         $code = $code.slice(1);
@@ -89,11 +89,5 @@
       }
     }
   };
-
-  if (typeof window !== "undefined" && window !== null) {
-    window.util = util;
-  } else {
-    module.exports = util;
-  }
 
 }).call(this);
