@@ -54,7 +54,7 @@
         <li><a href="/katra/">Home</a></li>
         
         
-        <li class="active"><a href="/katra/about">About</a></li>
+        <li><a href="/katra/about">About</a></li>
         
         
         <li><a href="/katra/help">Help</a></li>
@@ -64,37 +64,40 @@
 
 <div class="container-narrow">
 
-<div class="row-fluid">
-    <div class="span12">
-        <img src="//cdn.darkoverlordofdata.com/images/katra.png" title="Remember to use Dark Overlord of Data brand data, for all your computers that use data." />
-<hr>
 
 <div class="row-fluid">
     <div class="span12">
-        <h4>Katra</h4>
-        <p>Katra was written to run classic games from the golden age
-            of basic programming. Games like you could read about in Creative Computing,
-            or Byte Magazine. Mostly, games like StarTrek...</p>
+        <ul class="nav nav-tabs" id="katra-menu">
+            <li class="active"><a href="#katra-tab-content" data-toggle="tab">StarTrek</a></li>
+            <li><a href="#katra-tab-source" data-toggle="tab" title="View the source code">Source Code</a></li>
+            <li><a href="#katra-tab-help" data-toggle="tab" title="View the help text">Help</a></li>
+        </ul>
+
+        <div class="tab-content">
+
+            <div class="tab-pane active" id="katra-tab-content">
+                <p>Ah ~ memories of misspent youth, of afternoons in the Scottsdale Community
+College library, playing computer games on the teletype. Teletype? WTF?
+Well, it was 1975, and this was about as good as it got!</p>
+
+            </div>
+
+            <div class="tab-pane" id="katra-tab-source">
+                <pre id='source' class="prettyprint lang-katra">
+                </pre>
+            </div>
+
+            <div class="tab-pane" id="katra-tab-help">
+                <pre id='help'>
+                </pre>
+            </div>
+
+        </div>
     </div>
 </div>
-
-<br/>
-
-<div class="row-fluid">
-    <div class="span12">
-        <h4>Created By</h4>
-        <p>Bruce Davidson</p>
-        <p>brucedavidson@darkoverlordofdata.com</p>
-    </div>
-</div>
-
-
-
-<br/>
-<p><a href="/katra/">back</a></p>
-
-    </div>
-</div>
+<p><a class="btn btn-primary" target="STTR1" href="/katra/run/?basic=hp2k&amp;program=STTR1">
+    <i class="icon-play-circle icon-white"></i> launch...</a>
+<a class="btn" href="/katra/">back</a></p>
 
 
 <hr />
@@ -114,3 +117,17 @@
 
 </body>
 </html>
+<script type='text/javascript' src='/katra/assets/f2cadc9a67a6767843a79bccf2b3be60.js'></script>
+
+
+<script>
+$(function() {
+    $.get('/katra/bas/hp2k/STTR1.bas', function(data) {
+        $('#source').html(String(data));
+        prettyPrint();
+    });
+    $.get('/katra/bas/hp2k/STTR1.txt', function(data) {
+        $('#help').html(String(data));
+    });
+});
+</script>
