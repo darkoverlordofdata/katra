@@ -1,8 +1,0 @@
-DIM
-
-40 DIM A[10]
-50 DIM B[10]
-55 B[2]=42
-60 LET A[1] = B[2]
-65 PRINT A[1]
-70 END

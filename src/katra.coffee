@@ -96,7 +96,7 @@ class Console extends rte.Console
       when MODE_RUN
 
         for $item in $line.trim().split(",")
-          @buffer.push if isNaN($item) then String($item) else Number($item)
+          @buffer.push if isNaN($item) then String($item).toUpperCase() else Number($item)
 
         if @buffer.length < @vars.length
           @continuedPrompt = true

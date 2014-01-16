@@ -17,7 +17,7 @@ name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 url: http://darkoverlordofdata.com/katra
 
-source: ./source
+source: ./template
 destination: ../gh-pages
 isdev: true
 

@@ -22,31 +22,31 @@ util = require 'util'
 # Build Source
 #
 #
-task 'build:src', 'Build the coffee source', ->
+task 'build:src', 'Build the coffee template', ->
 
   #
   # Build the AST lib
   #
-  exec 'coffee -o source/_assets -c src', ($err, $stdout, $stderr) ->
+  exec 'coffee -o template/_assets -c src', ($err, $stdout, $stderr) ->
 
     util.log $err if $err if $err?
     util.log $stderr if $stderr if $stderr?
     util.log $stdout if $stdout if $stdout?
     util.log 'ok' unless $stdout?
 
-    exec 'browserify --debug source/_assets/run-katra.js | uglifyjs > source/_assets/bundle.js', ($err, $stdout, $stderr) ->
+    exec 'browserify --debug template/_assets/run-katra.js | uglifyjs > template/_assets/bundle.js', ($err, $stdout, $stderr) ->
 
       util.log $err if $err if $err?
       util.log $stderr if $stderr if $stderr?
       util.log $stdout if $stdout if $stdout?
       util.log 'ok' unless $stdout?
 
-task 'build:parser', 'Build the parser using BNF source', ->
+task 'build:parser', 'Build the parser using BNF template', ->
 
   #
   # Generate the parser
   #
-  exec 'jison src/kc.y src/kc.l --outfile source/_assets/kc.js', ($err, $stdout, $stderr) ->
+  exec 'jison src/kc.y src/kc.l --outfile template/_assets/kc.js', ($err, $stdout, $stderr) ->
 
     util.log $err if $err if $err?
     util.log $stderr if $stderr if $stderr?

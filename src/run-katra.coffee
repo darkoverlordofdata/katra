@@ -18,13 +18,17 @@ $ ->
   args = undefined # query args
   # parse the query args 
   parseQuery = ->
-    result = {}
-    pairs = window.location.search.substring(1).split("&")
-    for i of pairs
-      if pairs[i].length > 0
-        pair = pairs[i].split("=")
-        result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1])
-    result
+    if d16a?
+      console.log d16a.args
+      d16a.args
+    else
+      result = {}
+      pairs = window.location.search.substring(1).split("&")
+      for i of pairs
+        if pairs[i].length > 0
+          pair = pairs[i].split("=")
+          result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1])
+      result
 
   
   # resize the console to match the window 
@@ -49,8 +53,8 @@ $ ->
   $(window).bind "resizeEnd", setSize
   
   # load & run the basic program 
-  katra.setRoot "/katra/"
   args = parseQuery()
+  katra.setRoot args.root ? "/katra/"
   if Object.keys(args).length is 0
     args = title: "Katra BASIC"
     document.title = args.title

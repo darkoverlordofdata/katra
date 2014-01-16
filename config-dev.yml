@@ -22,7 +22,7 @@ port: 0xd16a
 isdev: false
 
 
-source: ./source
+source: ./template
 destination: ./gh-pages/katra
 serve:
   - ./gh-pages

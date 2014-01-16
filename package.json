@@ -14,10 +14,12 @@
     }
   ],
   "dependencies": {
-    "colors": "~0.6.2"
+    "colors": "~0.6.2",
+    "huginn": "0.0.16",
+    "coffee-script": "~1.6.3"
   },
   "scripts": {
-    "start": "coffee ./index.coffee",
+    "start": "node index.js",
     "test": "cake test"
   },
   "bin": {
