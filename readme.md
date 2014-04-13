@@ -1,5 +1,13 @@
 # Katra
 
+     _   __  ___ ___________  ___
+    | | / / / _ \_   _| ___ \/ _ \
+    | |/ / / /_\ \| | | |_/ / /_\ \
+    |    \ |  _  || | |    /|  _  |
+    | |\  \| | | || | | |\ \| | | |
+    \_| \_/\_| |_/\_/ \_| \_\_| |_/
+
+
 ## Basic interpreter
 
 One basic to run them? Katra is a basic language interpreter in coffee-script,
